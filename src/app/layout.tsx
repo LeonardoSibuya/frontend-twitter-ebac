@@ -1,5 +1,7 @@
 import EstiloGlobal from "../styles";
 
+import { Providers } from './providers'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -7,8 +9,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
+
       <EstiloGlobal />
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

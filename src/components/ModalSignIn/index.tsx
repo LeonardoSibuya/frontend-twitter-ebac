@@ -1,5 +1,11 @@
 import * as S from './styles'
 
+import useModalSignIn from './hooks/useModalSignIn'
+
+import { HashLoader } from 'react-spinners'
+
+import bgModal from '../../../public/background-modal.jpg'
+
 import {
     Modal,
     ModalOverlay,
@@ -9,11 +15,16 @@ import {
     ModalBody,
     ModalCloseButton,
     Button,
-    useDisclosure
+    useDisclosure,
+    Box,
 } from '@chakra-ui/react'
+
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 const ModalSignIn = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const { formik, isSubmited, passwordIsVisible, setPasswordIsVisible } = useModalSignIn()
 
     return (
         <>
@@ -21,38 +32,141 @@ const ModalSignIn = () => {
 
             <Modal isOpen={isOpen} onClose={onClose}>
 
-                <ModalOverlay backgroundColor={'#242d3428'} />
+                <ModalOverlay backgroundColor={'#00000053'} />
 
                 <ModalContent
-                    backgroundColor={'#000'}
+                    background={`url(${bgModal.src})`}
+                    backgroundSize="cover"
+                    backgroundRepeat='no-repeat'
+                    backgroundPosition="center"
                     borderRadius={'16px'}
-                    height={'50vh'}
+                    minHeight={'60vh'}
                     padding={'24px 0px'}
+                    boxShadow="4px 4px 4px 2px #000"
                 >
                     <ModalHeader>
                         <S.ModalTitle>
                             Entrar no Ebac-X
                         </S.ModalTitle>
                     </ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton color="#fff" />
 
-                    <ModalBody>
-                        <S.InputContainer>
-                            <input type="email" placeholder='Insira seu email' />
-                            <input type="password" placeholder='Insira sua senha' />
-                        </S.InputContainer>
-                    </ModalBody>
+                    <form action={formik.submitForm}>
+                        {isSubmited ? (
+                            <Box
+                                margin='24px auto 0'
+                                display='flex'
+                                flexDirection='column'
+                                alignItems='center'
+                                justifyContent='center'
+                            >
+                                <HashLoader
+                                    color="#36d7b7"
+                                    loading
+                                    size={80}
+                                    speedMultiplier={0.8}
+                                />
+                            </Box>
+                        ) : (
+                            <>
+                                <ModalBody>
+                                    <S.InputContainer>
+                                        <div>
+                                            <input
+                                                type="email"
+                                                placeholder='Insira seu email'
+                                                className={
+                                                    formik.touched.email
+                                                        &&
+                                                        formik.errors.email
+                                                        ? 'error'
+                                                        :
+                                                        formik.touched.email
+                                                            &&
+                                                            !formik.errors.email
+                                                            ? 'success' : ''
+                                                }
+                                                id='email'
+                                                name='email'
+                                                value={formik.values.email}
+                                                onBlur={formik.handleBlur}
+                                                onChange={formik.handleChange}
+                                            />
+                                            <span>
+                                                {formik.errors.email}
+                                            </span>
+                                        </div>
 
-                    <ModalFooter>
-                        <Button
-                            backgroundColor={'#D7DBDC'}
-                            width={'80%'}
-                            margin={'0 auto'}
-                            borderRadius={'24px'}
-                        >
-                            Avançar
-                        </Button>
-                    </ModalFooter>
+                                        <div>
+                                            <S.DivPassword>
+                                                {passwordIsVisible ? (
+                                                    <>
+                                                        <ViewOffIcon
+                                                            color='#fff'
+                                                            cursor='pointer'
+                                                            position='absolute'
+                                                            right='8px'
+                                                            top='22px'
+                                                            onClick={() => setPasswordIsVisible(!passwordIsVisible)} />
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <ViewIcon
+                                                            color='#fff'
+                                                            cursor='pointer'
+                                                            position='absolute'
+                                                            right='8px'
+                                                            top='22px'
+                                                            onClick={() => setPasswordIsVisible(!passwordIsVisible)}
+                                                        />
+                                                    </>
+                                                )}
+                                            </S.DivPassword>
+                                            <input
+                                                type={passwordIsVisible ? 'text' : 'password'}
+                                                placeholder='Insira sua senha'
+                                                className={
+                                                    formik.touched.password
+                                                        &&
+                                                        formik.errors.password
+                                                        ? 'error'
+                                                        :
+                                                        formik.touched.password
+                                                            &&
+                                                            !formik.errors.password
+                                                            ? 'success' : ''
+                                                }
+                                                id='password'
+                                                name='password'
+                                                value={formik.values.password}
+                                                onBlur={formik.handleBlur}
+                                                onChange={formik.handleChange}
+                                            />
+                                            <span>
+                                                {formik.errors.password}
+                                            </span>
+                                        </div>
+                                    </S.InputContainer>
+                                </ModalBody>
+
+                                <ModalFooter>
+                                    <Button
+                                        type='submit'
+                                        onSubmit={() => {
+                                            formik.handleSubmit()
+                                        }
+                                        }
+                                        backgroundColor={'#D7DBDC'}
+                                        width={'80%'}
+                                        margin={'0 auto'}
+                                        borderRadius={'24px'}
+                                    >
+                                        Avançar
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </form>
                 </ModalContent>
             </Modal>
         </>

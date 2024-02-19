@@ -23,7 +23,9 @@ export const Content = styled.div`
 `
 
 export const SubscribeTitle = styled.h2`
+    font-family: "Kode Mono", monospace;
     font-size: 40px;
+    font-weight: bolder;
     text-align: center;
     margin-bottom: 32px;
 
@@ -45,6 +47,7 @@ export const CreateAccountDiv = styled.div`
         border-radius: 24px;
         border: none;
         font-size: 16px;
+        font-family: "Kode Mono", monospace;
         font-weight: bold;
         cursor: pointer;
         letter-spacing: 1px;
@@ -90,6 +93,7 @@ export const AlreadyAccount = styled.div`
 
     p {
         font-size: 18px;
+        font-family: "Kode Mono", monospace;
         margin: 0 auto 16px;
         text-align: start;
 
@@ -108,6 +112,7 @@ export const AlreadyAccount = styled.div`
         border-radius: 24px;
         border: none;
         font-size: 16px;
+        font-family: "Kode Mono", monospace;
         font-weight: bold;
         cursor: pointer;
         letter-spacing: 1px;

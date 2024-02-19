@@ -10,6 +10,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
 
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      </head>
+
       <EstiloGlobal />
       <body>
         <Providers>{children}</Providers>

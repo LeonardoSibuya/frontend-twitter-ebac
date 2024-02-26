@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
+import { CreateUserRequest } from '../validations/Create-user-request';
+
 const useModalSignUp = () => {
     const [isSubmited, setIsSubmited] = useState(false)
 
@@ -22,15 +24,15 @@ const useModalSignUp = () => {
         }, 3000)
     }
 
-    const formik = useFormik({
+    const formik = useFormik<CreateUserRequest>({
         initialValues: {
-            username: '',
+            name: '',
             email: '',
             password: '',
             confirmPassword: ''
         },
         validationSchema: Yup.object({
-            username: Yup.string()
+            name: Yup.string()
                 .min(3, 'O nome deve conter pelo menos 3 caracteres')
                 .required('O campo é obrigatório'),
             email: Yup.string()

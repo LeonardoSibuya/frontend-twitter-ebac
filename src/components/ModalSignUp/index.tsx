@@ -86,25 +86,25 @@ const ModalSignUp = () => {
                                                 type="text"
                                                 placeholder='Insira seu nome de usúario'
                                                 className={
-                                                    formik.touched.username
+                                                    formik.touched.name
                                                         &&
-                                                        formik.errors.username
+                                                        formik.errors.name
                                                         ? 'error'
                                                         :
-                                                        formik.touched.username
+                                                        formik.touched.name
                                                             &&
-                                                            !formik.errors.username
+                                                            !formik.errors.name
                                                             ? 'success' : ''
                                                 }
-                                                id='username'
-                                                name='username'
-                                                value={formik.values.username}
+                                                id='name'
+                                                name='name'
+                                                value={formik.values.name}
                                                 onBlur={formik.handleBlur}
                                                 onChange={formik.handleChange}
                                             />
 
                                             <span>
-                                                {formik.errors.username}
+                                                {formik.errors.name}
                                             </span>
                                         </div>
 

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { signIn } from 'next-auth/react';
 
 const useModalSignIn = () => {
     const [isSubmited, setIsSubmited] = useState(false)
@@ -12,12 +13,23 @@ const useModalSignIn = () => {
 
     const router = useRouter()
 
-    const userValid = () => {
-        console.log('usuario valido')
-        setIsSubmited(true)
+    const validatingdUser = async () => {
+        const { email, password } = formik.values
 
+        const result = await signIn('credentials', {
+            email,
+            password,
+            redirect: false
+        })
+
+        if (result?.error) {
+            console.log(result)
+            return;
+        }
+
+        setIsSubmited(true)
         setTimeout(() => {
-            router.push('/');
+            router.replace('/homepage');
         }, 3000)
     }
 
@@ -38,7 +50,7 @@ const useModalSignIn = () => {
                     'A senha está incorreta'
                 ),
         }),
-        onSubmit: userValid
+        onSubmit: validatingdUser
     })
 
     return {

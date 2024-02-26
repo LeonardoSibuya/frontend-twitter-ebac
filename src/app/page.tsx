@@ -1,63 +1,56 @@
-'use client'
+"use client";
 
 import * as S from './styles'
 
-import Image from 'next/image';
-import { MoonIcon, Search2Icon, TriangleUpIcon, ChatIcon } from '@chakra-ui/icons'
+import ModalSignIn from '../components/ModalSignIn'
+import ModalSignUp from '../components/ModalSignUp'
 
-import profile from '../../public/profile.png'
+import { Container } from "../styles"
 
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
-export default function Home() {
-  return (
-    <S.MainContent>
-      <S.Aside>
-        <h1>
-          <span>ebac</span>-X
-        </h1>
+const Login = () => {
 
-        <S.ListLinks>
-          <li>
-            <TriangleUpIcon width='14px' />
-            <a href="">
-              Inicial
-            </a>
-          </li>
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
-          <li>
-            <Search2Icon width='14px' />
-            <a href="">
-              Buscar
-            </a>
-          </li>
+    if (status === "loading") {
+        return null; // Ou algum componente de carregamento
+    }
 
-          <li>
-            <ChatIcon width='14px' />
-            <a href="">
-              Mensagens
-            </a>
-          </li>
-        </S.ListLinks>
+    if (session) {
+        router.replace("/homepage");
+        return null;
+    }
 
-        <S.ProfileDiv>
-          <MoonIcon width='14px' color="#14659b" />
-          <a href=''>
-            Seu perfil
-          </a>
-        </S.ProfileDiv>
-      </S.Aside>
+    return (
+        <S.LoginContainer>
+            <S.Content>
+                <Container>
 
-      <S.HomePageSection>
-        <h2>Seu Feed</h2>
+                    <S.SubscribeTitle>
+                        Inscreva-se agora
+                    </S.SubscribeTitle>
 
-        <S.CreatePostDiv>
-          <Image src={profile} alt="" />
-          <textarea placeholder='O que está acontecendo?'/>
-          <button>
-            Postar
-          </button>
-        </S.CreatePostDiv>
-      </S.HomePageSection>
-    </S.MainContent>
-  );
+                    <S.CreateAccountDiv>
+                        <ModalSignUp />
+                        <p>
+                            Ao se inscrever, você concorda com os <span>Termos de Serviço</span> e a <span>Política de Privacidade</span>, incluindo o <span>Uso de Cookies</span>.
+                        </p>
+                    </S.CreateAccountDiv>
+
+                    <S.AlreadyAccount>
+                        <p>
+                            Já tem uma conta?
+                        </p>
+                        <ModalSignIn />
+                    </S.AlreadyAccount>
+
+                </Container>
+            </S.Content>
+        </S.LoginContainer>
+    )
 }
+
+export default Login

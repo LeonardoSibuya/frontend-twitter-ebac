@@ -1,158 +1,134 @@
 import styled from "styled-components"
 
-export const MainContent = styled.main`
-    padding: 24px 80px;
+import { breakpoints } from "@/styles"
 
-    display: flex;
-    align-items: start;
-    justify-content: left;
-    gap: 40px;
-    background-color: #000;
+export const LoginContainer = styled.section`
     height: 100vh;
-`
-
-export const Aside = styled.aside`
-    height: 90vh;
+    background-color: #000;
     color: #fff;
-    width: 16%;
-    border-right: 1px solid #878787;
-
-    h1 {
-        font-size: 32px;
-        font-weight: bolder;
-        font-family: "Kode Mono", monospace;
-        letter-spacing: 1px;
-        color: #14659b;
-
-        span {
-            font-style: italic;
-            font-size: 28px;
-        }
-    }
 `
 
-export const ListLinks = styled.ul`
+export const Content = styled.div`
+    padding: 60px 0;
+    width: 60%;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: start;
-    gap: 16px;
-    margin: 32px 0 160px;
-
-    li {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        a {
-            font-size: 18px;
-            font-family: "Kode Mono", monospace;
-
-            &:hover {
-                border-bottom: 1px solid #fff;
-                transition: 0.5s ease;
-                letter-spacing: 0.2px;
-            }
-        }
-    }
-`
-
-export const ProfileDiv = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    gap: 8px;
-
-    a {
-        font-family: "Kode Mono", monospace;
-        font-size: 16px;
-        color: #14659b;
-
-        &:hover {
-            border-bottom: 1px solid #14659b;
-            letter-spacing: 0.2px;
-        }
-    }
-
-    img {
-        width: 24px;
-        height: 24px;
-    }
-`
-
-export const HomePageSection = styled.section`
-    margin: 0 auto;
-    width: 90%;
-
-    h2 {
-        text-align: center;
-        font-size: 40px;
-        font-family: "Kode Mono", monospace;
-        color: #fff;
-        font-weight: bold;
-        letter-spacing: 2px;
-    }
-`
-
-export const CreatePostDiv = styled.div`
-    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
-    margin: 24px 0;
-    border-top: 1px solid #878787;
-    border-bottom: 1px solid #878787;
-    padding: 28px 0;
 
-    img {
-        width: 32px;
-        height: 32px;
+    @media (max-width: ${breakpoints.tablet}) {
+        width: 100%;
+    }
+`
+
+export const SubscribeTitle = styled.h2`
+    font-family: "Kode Mono", monospace;
+    font-size: 40px;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 32px;
+
+    @media (max-width: ${breakpoints.tablet}) {
+        font-size: 28px;
+    }
+`
+
+export const CreateAccountDiv = styled.div`
+    text-align: center;
+
+    p, button {
+            width: 30%;
     }
 
-    textarea {
-        background-color: transparent;
-        outline: none;
-        padding: 12px 12px 0;
-        color: #ccc;
-        width: 320px;
-        border: 2px solid transparent;
-        border-radius: 16px;
-        resize: none;
-
-        &::placeholder {
-            text-align: center;
-        }
+    button {
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 24px;
+        border: none;
+        font-size: 16px;
+        font-family: "Kode Mono", monospace;
+        font-weight: bold;
+        cursor: pointer;
+        letter-spacing: 1px;
+        background-color: #1D9BF0;
+        color: #fff;
 
         &:hover {
-            &::placeholder {
-                color: #fff;
+            background-color: #1a86ce;
+            transition: 0.3s;
+        }
+    }
+
+    p {
+        font-size: 10px;
+        margin: 0 auto;
+        text-align: start;
+        color: #8e8e8e;
+
+        span {
+            color: #1D9BF0;
+
+            &:hover {
+                text-decoration: underline;
+                cursor: pointer;
             }
         }
+    }
 
-        &:focus {
-            border: 2px solid #14659b;
+    @media (max-width: ${breakpoints.tablet}) {
+        p, button {
+            width: 40%;
+        }
+    }
+`
 
-            &::placeholder {
-                color: #14659b;
+export const AlreadyAccount = styled.div`
+    text-align: center;
+    margin-top: 40px;
+
+    p, button {
+            width: 30%;
+    }
+
+    p {
+        font-size: 18px;
+        font-family: "Kode Mono", monospace;
+        margin: 0 auto 16px;
+        text-align: start;
+
+        span {
+            color: #1D9BF0;
+
+            &:hover {
+                text-decoration: underline;
+                cursor: pointer;
             }
         }
     }
 
     button {
-        background-color: #14659b;
-        color: #878787;
-        border-radius: 32px;
-        padding: 8px 16px;
+        padding: 12px;
+        border-radius: 24px;
+        border: none;
+        font-size: 16px;
+        font-family: "Kode Mono", monospace;
         font-weight: bold;
-        font-size: 12px;
+        cursor: pointer;
         letter-spacing: 1px;
-        text-transform: uppercase;
+        background-color: transparent;
+        color: #1d9bf0;
+        border: 1px solid #fff;
 
         &:hover {
-            color: #ccc;
+            background-color: #081a26;
+            transition: 0.3s;
         }
+    }
 
-        &:active {
-            background-color: #11507a;
+    @media (max-width: ${breakpoints.tablet}) {
+        p, button {
+            width: 40%;
         }
     }
 `

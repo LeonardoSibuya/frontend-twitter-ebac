@@ -1,12 +1,15 @@
+import { NextAuthSessionProvider } from "../providers/sessionProvider";
+
 import EstiloGlobal from "../styles";
 
-import { Providers } from './providers'
+import { ChakraProviders } from '../providers/chakraProviders'
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="pt-BR">
 
@@ -17,7 +20,9 @@ export default function RootLayout({
 
       <EstiloGlobal />
       <body>
-        <Providers>{children}</Providers>
+        <NextAuthSessionProvider>
+          <ChakraProviders>{children}</ChakraProviders>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

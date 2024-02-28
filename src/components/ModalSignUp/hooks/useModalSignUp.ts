@@ -19,25 +19,26 @@ const useModalSignUp = () => {
 
     const router = useRouter()
 
+    const emailExists = (email: string) => {
+        const lowerCaseEmail = email.toLowerCase();
+        const isEmailInUse = UserArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
+
+        return !isEmailInUse;
+    };
+
     const userValid = async () => {
-        const { name, confirmPassword, email, password } = formik.values;
+        const { name, email, password } = formik.values;
 
         try {
             const newUser: UserInterface = {
                 id: (UserArray.length + 1).toString(),
                 name: name,
                 email: email,
-                confirmPassword: confirmPassword,
                 password: password,
             };
 
-            console.log('Novo usuário adicionado:', newUser);
-
             UserArray.push(newUser);
 
-            console.log('Array de usuários após adição:', UserArray);
-
-            // Autenticar o novo usuário manualmente
             await signIn('credentials', {
                 email: newUser.email,
                 password: newUser.password,
@@ -73,7 +74,8 @@ const useModalSignUp = () => {
                 .required('O campo é obrigatório'),
             email: Yup.string()
                 .email('E-mail inválido')
-                .required('O campo é obrigatório'),
+                .required('O campo é obrigatório')
+                .test('emailExists', 'Este e-mail já está em uso', emailExists),
             userGitHub: Yup.string()
                 .min(3, 'O nome de usúario deve conter pelo menos 3 caracteres e ser válido'),
             password: Yup.string()

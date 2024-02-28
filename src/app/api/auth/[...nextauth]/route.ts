@@ -14,30 +14,24 @@ const nextAuthOptions: NextAuthOptions = {
             async authorize(credentials) {
                 const users: UserInterface[] = UserArray;
 
-                console.log('Credenciais fornecidas:', credentials);
+                const name = credentials?.email.split('@')[0] || '';
+                
+                const newUser: UserInterface = {
+                    id: (users.length + 1).toString(),
+                    name: name,
+                    email: credentials?.email || '',
+                    password: credentials?.password,
+                };
 
-                const user = users.find(
-                    (u) => u.email === credentials?.email && u.password === credentials?.password
-                );
+                users.push(newUser);
 
-                if (user) {
-                    // Criar um novo objeto com as propriedades específicas que o NextAuth espera
-                    const authenticatedUser = {
-                        id: user.id ? user.id.toString() : '', // Converter para string se existir, senão, usar string vazia
-                        name: user.name,
-                        email: user.email,
-                    };
-                    console.log('Usuário autenticado:', authenticatedUser);
+                const user = users.find((u) => u.email === credentials?.email);
 
-                    // Retornar uma promessa que resolve o objeto do usuário autenticado
-                    return Promise.resolve(authenticatedUser);
+                if (!user || user.password !== credentials?.password) {
+                    return null;
                 }
 
-                console.log('Usuário não encontrado');
-                console.log('Credenciais fornecidas:', credentials?.email, credentials?.password);
-                console.log('Array de usuários:', users);
-
-                return Promise.resolve(null);
+                return Promise.resolve(user);
             }
         })
     ],
@@ -47,7 +41,31 @@ const nextAuthOptions: NextAuthOptions = {
         newUser: '/homepage'
         // error: '/auth/error',
         // verifyRequest: '/auth/verify-request',
-    }
+    },
+    events: {
+        createUser: async (message) => {
+            const newUser: UserInterface = {
+                id: message.user.id,
+                name: message.user.name || '',
+                email: message.user.email || '',
+            };
+
+
+            UserArray.push(newUser);
+        },
+        signIn: async (message) => {
+
+            if (message.isNewUser) {
+
+                const newUser = {
+                    name: message.user.name || '',
+                    email: message.user.email || '',
+                };
+
+                console.log('Novo usuário criado:', newUser);
+            }
+        },
+    },
 }
 
 const handler = NextAuth(nextAuthOptions)

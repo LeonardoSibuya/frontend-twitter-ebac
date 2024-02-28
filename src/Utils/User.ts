@@ -2,9 +2,9 @@ export interface UserInterface {
     id: string;
     name: string;
     email: string;
-    password: string;
+    password?: string;
     confirmPassword?: string;
-    // userGitHub?: string;
+    userGitHub?: string;
 }
 
 const UserArray: UserInterface[] = [

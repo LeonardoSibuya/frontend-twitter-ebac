@@ -22,7 +22,7 @@ const Login = () => {
     }
 
     if (session) {
-        console.log("Sessão existente:");
+        console.log("Sessão existente:", session);
         router.replace("/homepage");
     }
 

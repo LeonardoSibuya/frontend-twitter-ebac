@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 import { signIn } from 'next-auth/react';
 
 import { SignInUserRequest } from '../validations/SignIn-user-request';
+import UserArray from '@/Utils/User';
 
 const useModalSignIn = () => {
     const [isSubmited, setIsSubmited] = useState(false)
@@ -14,6 +15,13 @@ const useModalSignIn = () => {
     const [passwordIsVisible, setPasswordIsVisible] = useState(false)
 
     const router = useRouter()
+
+    const emailNolExists = (email: string) => {
+        const lowerCaseEmail = email.toLowerCase();
+        const isEmailInUse = UserArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
+
+        return isEmailInUse;
+    };
 
     const validatingdUser = async () => {
         const { email, password } = formik.values
@@ -43,7 +51,8 @@ const useModalSignIn = () => {
         validationSchema: Yup.object({
             email: Yup.string()
                 .email('E-mail inválido')
-                .required('O campo é obrigatório'),
+                .required('O campo é obrigatório')
+                .test('emailExists', 'Este e-mail não está cadastrado', emailNolExists),
             password: Yup.string()
                 .min(5, 'A senha está incorreta')
                 .required('O campo é obrigatório')

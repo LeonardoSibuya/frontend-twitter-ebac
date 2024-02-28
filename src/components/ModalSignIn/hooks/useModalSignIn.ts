@@ -6,6 +6,8 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { signIn } from 'next-auth/react';
 
+import { SignInUserRequest } from '../validations/SignIn-user-request';
+
 const useModalSignIn = () => {
     const [isSubmited, setIsSubmited] = useState(false)
 
@@ -33,7 +35,7 @@ const useModalSignIn = () => {
         }, 3000)
     }
 
-    const formik = useFormik({
+    const formik = useFormik<SignInUserRequest>({
         initialValues: {
             email: '',
             password: ''

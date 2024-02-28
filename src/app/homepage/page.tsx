@@ -30,108 +30,114 @@ const Homepage = () => {
 
   const { data: session, status } = useSession()
 
-  console.log(session?.user)
-
   const router = useRouter()
 
+  useEffect(() => {
+    if (status !== "authenticated" || !session) {
+      console.log('Usuário não autenticado, redirecionando para /');
+      router.replace("/");
+    } else {
+      setIsLoaded(true);
+      console.log('Usuário autenticado, permitindo acesso à homepage');
+    }
+  }, [status, session, router]);
+
   const logout = async () => {
-    setIsLogoff(true)
+    setIsLogoff(true);
 
-    await setTimeout(() => {
-      router.replace('/')
-
+    setTimeout(() => {
       signOut({
         redirect: false,
-      })
+      });
 
-    }, 3000)
+      router.replace('/');
+    }, 3000);
+  };
 
-  }
+  if (status === 'loading') return; 
 
-  if (status === 'authenticated')
+  return (
+    <>
+      {isLogoff ? (
+        <S.LogoffSection>
+          <S.LogoffDiv>
+            <p>Saindo, por favor aguarde</p>
+            <BeatLoader color="#14659b" />
+          </S.LogoffDiv>
+        </S.LogoffSection>
+      ) : (
+        <>
+          {isLoaded ? (
+            <S.MainContent>
+              <S.Aside>
+                <h1>
+                  <span>ebac</span>-X
+                </h1>
 
-    return (
-      <>
-        {isLogoff ? (
-          <S.LogoffSection>
-            <S.LogoffDiv>
-              <p>Saindo, por favor aguarde</p>
-              <BeatLoader color="#14659b" />
-            </S.LogoffDiv>
-          </S.LogoffSection>
-        ) : (
-          <>
-            {isLoaded ? (
-              <S.MainContent>
-                <S.Aside>
-                  <h1>
-                    <span>ebac</span>-X
-                  </h1>
-
-                  <S.ListLinks>
-                    <li>
-                      <TriangleUpIcon width='14px' />
-                      <a href="">
-                        Inicial
-                      </a>
-                    </li>
-
-                    <li>
-                      <Search2Icon width='14px' />
-                      <a href="">
-                        Buscar
-                      </a>
-                    </li>
-
-                    <li>
-                      <ChatIcon width='14px' />
-                      <a href="">
-                        Mensagens
-                      </a>
-                    </li>
-                  </S.ListLinks>
-
-                  <S.ProfileDiv>
-                    <MoonIcon width='14px' color="#14659b" />
-                    <a href=''>
-                      Olá {session?.user?.name}
+                <S.ListLinks>
+                  <li>
+                    <TriangleUpIcon width='14px' />
+                    <a href="">
+                      Inicial
                     </a>
-                  </S.ProfileDiv>
+                  </li>
 
-                  <S.ButtonLogout type='button' onClick={logout}>
-                    Sair
-                  </S.ButtonLogout>
-                </S.Aside>
+                  <li>
+                    <Search2Icon width='14px' />
+                    <a href="">
+                      Buscar
+                    </a>
+                  </li>
 
-                <S.HomePageSection>
-                  <h2>Seu Feed</h2>
+                  <li>
+                    <ChatIcon width='14px' />
+                    <a href="">
+                      Mensagens
+                    </a>
+                  </li>
+                </S.ListLinks>
 
-                  <S.CreatePostDiv>
-                    <Image src={profile} alt="" />
-                    <textarea placeholder='O que está acontecendo?' />
-                    <button>
-                      Postar
-                    </button>
-                  </S.CreatePostDiv>
+                <S.ProfileDiv>
+                  <MoonIcon width='14px' color="#14659b" />
+                  <a href=''>
+                    Olá {session?.user?.name}
+                  </a>
+                </S.ProfileDiv>
 
-                  <S.TweetsContainer>
-                    <Tweets />
-                    <Tweets />
-                    <Tweets />
-                    <Tweets />
-                  </S.TweetsContainer>
-                </S.HomePageSection>
-              </S.MainContent>
-            ) : (
-              <section>
-                <LoadingScreen />
-              </section>
-            )}
+                <S.ButtonLogout type='button' onClick={logout}>
+                  Sair
+                </S.ButtonLogout>
+              </S.Aside>
 
-          </>
-        )}
-      </>
-    );
+              <S.HomePageSection>
+                <h2>Seu Feed</h2>
+
+                <S.CreatePostDiv>
+                  <Image src={profile} alt="" />
+                  <textarea placeholder='O que está acontecendo?' />
+                  <button>
+                    Postar
+                  </button>
+                </S.CreatePostDiv>
+
+                <S.TweetsContainer>
+                  <Tweets />
+                  <Tweets />
+                  <Tweets />
+                  <Tweets />
+                </S.TweetsContainer>
+              </S.HomePageSection>
+            </S.MainContent>
+          ) : (
+            <section>
+              <LoadingScreen />
+            </section>
+          )}
+
+        </>
+      )}
+    </>
+  );
 }
 
 export default Homepage

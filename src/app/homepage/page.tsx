@@ -1,13 +1,9 @@
 "use client"
-
-import { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import * as S from './styles'
 
 import Image from 'next/image';
-import { signOut, useSession } from "next-auth/react"
-import { useRouter } from 'next/navigation';
-
 
 import { BeatLoader } from 'react-spinners';
 import { MoonIcon, Search2Icon, TriangleUpIcon, ChatIcon } from '@chakra-ui/icons'
@@ -17,44 +13,11 @@ import profile from '../../../public/profile.png'
 import LoadingScreen from '@/components/LoadingScreen';
 import Tweets from '@/components/Tweets';
 
+import useHomepage from './hooks/useHomepage';
 
 const Homepage = () => {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [isLogoff, setIsLogoff] = useState(false)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoaded(true)
-    }, 3000)
-  }, [])
-
-  const { data: session, status } = useSession()
-
-  const router = useRouter()
-
-  useEffect(() => {
-    if (status !== "authenticated" || !session) {
-      console.log('Usuário não autenticado, redirecionando para /');
-      router.replace("/");
-    } else {
-      setIsLoaded(true);
-      console.log('Usuário autenticado, permitindo acesso à homepage');
-    }
-  }, [status, session, router]);
-
-  const logout = async () => {
-    setIsLogoff(true);
-
-    setTimeout(() => {
-      signOut({
-        redirect: false,
-      });
-
-      router.replace('/');
-    }, 3000);
-  };
-
-  if (status === 'loading') return; 
+  const { handlePostTweet, handleTweetChange, isLoaded, isLogoff, logout, newTweet, session, status, tweets } = useHomepage()
 
   return (
     <>
@@ -113,18 +76,33 @@ const Homepage = () => {
                 <h2>Seu Feed</h2>
 
                 <S.CreatePostDiv>
-                  <Image src={profile} alt="" />
-                  <textarea placeholder='O que está acontecendo?' />
-                  <button>
-                    Postar
-                  </button>
+                  <Image src={profile} alt="" width={100} height={100} />
+                  <form>
+                    <textarea
+                      value={newTweet}
+                      onChange={handleTweetChange}
+                      placeholder='O que está acontecendo?'
+                    />
+                    <button
+                      type="button"
+                      onClick={handlePostTweet}
+                    >
+                      Postar
+                    </button>
+                  </form>
                 </S.CreatePostDiv>
 
                 <S.TweetsContainer>
-                  <Tweets />
-                  <Tweets />
-                  <Tweets />
-                  <Tweets />
+                  <ul>
+                    {tweets?.map((tweet, index) => (
+                      <Tweets
+                        key={index}
+                        name={tweet.user.name}
+                        created_at={tweet.createdAt}
+                        tweet={tweet.text}
+                      />
+                    ))}
+                  </ul>
                 </S.TweetsContainer>
               </S.HomePageSection>
             </S.MainContent>

@@ -9,6 +9,9 @@ export default withFonts({
             families: ['Kode Mono:400..700'], // Adicione as fontes desejadas
         },
     },
+    images: {
+        domains: ['avatars.githubusercontent.com'],
+    },
 });
 
 export { nextConfig };

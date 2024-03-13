@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
-import UserArray, { UserInterface } from '@/Utils/User';
+import UserArray, { User, updateUserArray } from '@/Utils/User';
+
 import { signIn } from 'next-auth/react';
 
 const useModalSignUp = () => {
@@ -15,7 +16,6 @@ const useModalSignUp = () => {
 
     const [passwordIsVisible, setPasswordIsVisible] = useState(false)
     const [confirmIsVisible, setConfirmIsVisible] = useState(false)
-
 
     const router = useRouter()
 
@@ -30,14 +30,25 @@ const useModalSignUp = () => {
         const { name, email, password } = formik.values;
 
         try {
-            const newUser: UserInterface = {
+            const newUser: User = {
                 id: (UserArray.length + 1).toString(),
                 name: name,
                 email: email,
                 password: password,
+                addTweet: function (tweet: string): void {
+                    throw new Error('Function not implemented.');
+                },
+                follow: function (users: Omit<User, 'password'>[]): void {
+                    throw new Error('Function not implemented.');
+                },
+                addFollower: function (user: Omit<User, 'password'>): void {
+                    throw new Error('Function not implemented.');
+                }
             };
 
             UserArray.push(newUser);
+            
+            updateUserArray([...UserArray, newUser]);
 
             await signIn('credentials', {
                 email: newUser.email,
@@ -59,14 +70,22 @@ const useModalSignUp = () => {
         }
     }, [router, isSubmited]);
 
-    const formik = useFormik<UserInterface>({
+    const formik = useFormik<User>({
         initialValues: {
             id: '',
             name: '',
             email: '',
-            // userGitHub: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            addTweet: function (tweet: string): void {
+                throw new Error('Function not implemented.');
+            },
+            follow: function (users: Omit<User, 'password'>[]): void {
+                throw new Error('Function not implemented.');
+            },
+            addFollower: function (user: Omit<User, 'password'>): void {
+                throw new Error('Function not implemented.');
+            }
         },
         validationSchema: Yup.object({
             name: Yup.string()

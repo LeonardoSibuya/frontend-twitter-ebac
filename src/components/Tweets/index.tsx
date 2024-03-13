@@ -2,19 +2,26 @@ import * as S from './styles'
 
 import { TimeIcon } from "@chakra-ui/icons"
 
-const Tweets = () => {
+type Props = {
+    name: string,
+    tweet: string
+    created_at: string
+}
+
+const Tweets = ({ name, tweet, created_at }: Props) => {
+
     return (
         <S.Tweet>
             <S.TweetInfo>
-                <a href=''>Nome tal</a>
+                <a href=''>{name}</a>
                 <TimeIcon width="12px" />
                 <span>
-                    há 4h
+                    {created_at}
                 </span>
             </S.TweetInfo>
 
             <S.TweetText>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta repellat magni laborum quo. Consequatur rem quae nam est illo itaque perferendis, excepturi autem quam laborum nesciunt magnam architecto at quos.
+                {tweet}
             </S.TweetText>
         </S.Tweet>
     )

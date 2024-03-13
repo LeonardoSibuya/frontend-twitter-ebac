@@ -1,4 +1,4 @@
-import UserArray, { UserInterface } from "@/Utils/User";;
+import UserArray, { User } from "@/Utils/User";;
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 
@@ -12,15 +12,24 @@ const nextAuthOptions: NextAuthOptions = {
             },
 
             async authorize(credentials) {
-                const users: UserInterface[] = UserArray;
+                const users: User[] = UserArray;
 
                 const name = credentials?.email.split('@')[0] || '';
-                
-                const newUser: UserInterface = {
+
+                const newUser: User = {
                     id: (users.length + 1).toString(),
-                    name: name,
+                    name: name || '',
                     email: credentials?.email || '',
-                    password: credentials?.password,
+                    password: credentials?.password || '',
+                    addTweet: function (tweet: string): void {
+                        throw new Error("Function not implemented.");
+                    },
+                    follow: function (users: User[]): void {
+                        throw new Error("Function not implemented.");
+                    },
+                    addFollower: function (user: User): void {
+                        throw new Error("Function not implemented.");
+                    }
                 };
 
                 users.push(newUser);
@@ -44,10 +53,20 @@ const nextAuthOptions: NextAuthOptions = {
     },
     events: {
         createUser: async (message) => {
-            const newUser: UserInterface = {
+            const newUser: User = {
                 id: message.user.id,
                 name: message.user.name || '',
                 email: message.user.email || '',
+                password: '',
+                addTweet: function (tweet: string): void {
+                    throw new Error("Function not implemented.");
+                },
+                follow: function (users: User[]): void {
+                    throw new Error("Function not implemented.");
+                },
+                addFollower: function (user: User): void {
+                    throw new Error("Function not implemented.");
+                }
             };
 
 

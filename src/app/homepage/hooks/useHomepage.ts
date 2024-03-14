@@ -17,7 +17,7 @@ const useHomepage = () => {
 
     const [newTweet, setNewTweet] = useState('')
 
-    const [tweets, setTweets] = useState<Array<{ text: string; user: { name: string }; createdAt: string }> | undefined>(undefined);
+    const [tweets, setTweets] = useState<Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined>([]);
 
     const router = useRouter()
 
@@ -62,12 +62,19 @@ const useHomepage = () => {
     const handlePostTweet = async () => {
         if (loggedInUser) {
 
-            if (newTweet === '') {
+            if (newTweet === '' || setNewTweet.length < 1) {
                 alert('ERRO: Não é possível postar tweets vazios')
                 return;
             }
 
             try {
+                const newTweetObject = {
+                    user: { name: loggedInUser.name },
+                    createdAt: new Date(), // Usar a data e hora atual
+                    text: newTweet,
+                };
+
+
                 await loggedInUser.addTweet(newTweet);
                 setNewTweet('');
                 updateTweets();
@@ -86,7 +93,7 @@ const useHomepage = () => {
             // Obter os tweets do usuário logado
             const userTweets = loggedInUser?.tweets?.map(tweet => ({
                 user: { name: loggedInUser.name },
-                createdAt: new Date().toISOString(),
+                createdAt: new Date(),
                 text: tweet,
             }));
 
@@ -94,17 +101,21 @@ const useHomepage = () => {
             const followedUsersTweets = loggedInUser?.follows?.flatMap(user =>
                 user?.tweets?.map(tweet => ({
                     user: { name: user.name },
-                    createdAt: new Date().toISOString(),
+                    createdAt: new Date(),
                     text: tweet,
                 }))
             );
 
             // Combinar os tweets do usuário logado com os tweets dos usuários seguidos
-            const combinedTweets = [...userTweets!, ...followedUsersTweets!];
+            const userTweetsFiltered = userTweets?.filter(tweet => tweet !== undefined) as Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined;
+            const followedUsersTweetsFiltered = followedUsersTweets?.filter(tweet => tweet !== undefined) as Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined;
 
-            if (combinedTweets) {
-                setTweets(combinedTweets.filter(tweet => tweet !== undefined) as Array<{ text: string; user: { name: string }; createdAt: string }>);
-            }
+            let combinedTweets = [...userTweetsFiltered!, ...followedUsersTweetsFiltered!];
+
+            // Ordenar os tweets por ordem do mais novo para o mais velho
+            const sortedTweets = combinedTweets.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+            setTweets(sortedTweets);
         }
     };
 
@@ -112,7 +123,6 @@ const useHomepage = () => {
         isLoaded,
         isLogoff,
         session,
-        status,
         newTweet,
         tweets,
         logout,

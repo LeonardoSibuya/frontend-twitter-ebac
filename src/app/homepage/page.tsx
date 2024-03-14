@@ -14,10 +14,11 @@ import LoadingScreen from '@/components/LoadingScreen';
 import Tweets from '@/components/Tweets';
 
 import useHomepage from './hooks/useHomepage';
+import Link from 'next/link';
 
 const Homepage = () => {
 
-  const { handlePostTweet, handleTweetChange, isLoaded, isLogoff, logout, newTweet, session, status, tweets } = useHomepage()
+  const { handlePostTweet, handleTweetChange, isLoaded, isLogoff, logout, newTweet, session, tweets } = useHomepage()
 
   return (
     <>
@@ -62,9 +63,9 @@ const Homepage = () => {
 
                 <S.ProfileDiv>
                   <MoonIcon width='14px' color="#14659b" />
-                  <a href=''>
+                  <Link href={`/profiles/${session?.user?.name}`}>
                     Olá {session?.user?.name}
-                  </a>
+                  </Link>
                 </S.ProfileDiv>
 
                 <S.ButtonLogout type='button' onClick={logout}>
@@ -77,19 +78,17 @@ const Homepage = () => {
 
                 <S.CreatePostDiv>
                   <Image src={profile} alt="" width={100} height={100} />
-                  <form>
-                    <textarea
-                      value={newTweet}
-                      onChange={handleTweetChange}
-                      placeholder='O que está acontecendo?'
-                    />
-                    <button
-                      type="button"
-                      onClick={handlePostTweet}
-                    >
-                      Postar
-                    </button>
-                  </form>
+                  <textarea
+                    value={newTweet}
+                    onChange={handleTweetChange}
+                    placeholder='O que está acontecendo?'
+                  />
+                  <button
+                    type="button"
+                    onClick={handlePostTweet}
+                  >
+                    Postar
+                  </button>
                 </S.CreatePostDiv>
 
                 <S.TweetsContainer>
@@ -98,6 +97,7 @@ const Homepage = () => {
                       <Tweets
                         key={index}
                         name={tweet.user.name}
+                        profile={tweet.user.name}
                         created_at={tweet.createdAt}
                         tweet={tweet.text}
                       />

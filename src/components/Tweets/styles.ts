@@ -28,12 +28,18 @@ export const TweetInfo = styled.div`
             color: #cecece;
         }
     }
+`
 
-    span {
-        font-size: 12px;
-        color: #cecece;
-        font-style: italic;
-    }
+export const NameSpan = styled.span`
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Kode Mono", monospace;
+`
+
+export const Date = styled.span`
+    font-size: 12px;
+    color: #cecece;
+    font-style: italic;
 `
 
 export const TweetText = styled.p`

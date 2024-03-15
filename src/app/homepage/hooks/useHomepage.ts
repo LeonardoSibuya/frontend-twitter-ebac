@@ -112,6 +112,10 @@ const useHomepage = () => {
 
             let combinedTweets = [...userTweetsFiltered!, ...followedUsersTweetsFiltered!];
 
+            if (!combinedTweets) {
+                return ;
+            }
+
             // Ordenar os tweets por ordem do mais novo para o mais velho
             const sortedTweets = combinedTweets.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 

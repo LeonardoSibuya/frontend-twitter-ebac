@@ -41,11 +41,24 @@ export class User {
         });
     }
 
+    unfollow(userToUnfollow: User) {
+        // Remove o usuário a ser desseguido dos follows deste usuário
+        this.follows = this.follows?.filter(user => user.id !== userToUnfollow.id);
+
+        // Remove este usuário dos followers do usuário a ser desseguido
+        userToUnfollow.removeFollower(this);
+    }
+
     addFollower(user: Omit<User, 'password'>) {
         if (user.id !== this.id && !this.followers?.some((u) => u.id === user.id)) {
             const { id, name, email, tweets } = user;
             this.followers?.push(new User(id, name, email, '', tweets || []));
         }
+    }
+
+    removeFollower(userToRemove: User) {
+        // Remove o usuário dos followers deste usuário
+        this.followers = this.followers?.filter(user => user.id !== userToRemove.id);
     }
 }
 

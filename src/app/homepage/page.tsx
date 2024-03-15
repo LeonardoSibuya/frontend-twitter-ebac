@@ -40,13 +40,6 @@ const Homepage = () => {
 
                 <S.ListLinks>
                   <li>
-                    <TriangleUpIcon width='14px' />
-                    <a href="">
-                      Inicial
-                    </a>
-                  </li>
-
-                  <li>
                     <Search2Icon width='14px' />
                     <a href="">
                       Buscar
@@ -97,6 +90,7 @@ const Homepage = () => {
                       <Tweets
                         key={index}
                         name={tweet.user.name}
+                        isHomepage={true}
                         profile={tweet.user.name}
                         created_at={tweet.createdAt}
                         tweet={tweet.text}

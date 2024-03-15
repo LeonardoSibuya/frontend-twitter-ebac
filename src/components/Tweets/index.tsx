@@ -10,20 +10,27 @@ export type PropsTweet = {
     tweet: string
     created_at: Date
     profile?: string
+    isHomepage: boolean
 }
 
-const Tweets = ({ name, tweet, created_at, profile }: PropsTweet) => {
+const Tweets = ({ name, tweet, created_at, profile, isHomepage }: PropsTweet) => {
 
     const formattedDate = created_at.toLocaleString();
 
     return (
         <S.Tweet>
             <S.TweetInfo>
-                <Link href={`/profiles/${profile}`}>{name}</Link>
+                {isHomepage ? (
+                    <Link href={`/profiles/${profile}`}>{name}</Link>
+                ) : (
+                    <S.NameSpan>
+                        {name}
+                    </S.NameSpan>
+                )}
                 <TimeIcon width="12px" />
-                <span>
+                <S.Date>
                     {formattedDate}
-                </span>
+                </S.Date>
             </S.TweetInfo>
 
             <S.TweetText>

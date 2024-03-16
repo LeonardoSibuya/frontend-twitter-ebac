@@ -17,9 +17,38 @@ const useHomepage = () => {
 
     const [newTweet, setNewTweet] = useState('')
 
+    const [isOpen, setIsOpen] = useState(true)
+
+    const [searchUser, setSearchUser] = useState('')
+    const [isSearch, setIsSearch] = useState(false)
+
     const [tweets, setTweets] = useState<Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined>([]);
 
     const router = useRouter()
+
+    const openSideBar = () => {
+        setIsOpen(!isOpen)
+        setIsSearch(false)
+    }
+
+    const searchingUser = () => {
+        const userSearched = UserArray.find((user) => user.name.toLowerCase() === searchUser.toLowerCase())
+
+        if (!userSearched) {
+            return alert('ERRO: Usuário não encontrado')
+        }
+
+        return router.replace(`/profiles/${searchUser}`);
+    }
+
+    const verifyIsSearch = (username: string) => {
+        if (username.length >= 1) {
+            setIsSearch(true)
+        } else {
+            setIsSearch(false)
+        }
+        return;
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -113,7 +142,7 @@ const useHomepage = () => {
             let combinedTweets = [...userTweetsFiltered!, ...followedUsersTweetsFiltered!];
 
             if (!combinedTweets) {
-                return ;
+                return;
             }
 
             // Ordenar os tweets por ordem do mais novo para o mais velho
@@ -129,9 +158,15 @@ const useHomepage = () => {
         session,
         newTweet,
         tweets,
+        isOpen,
+        isSearch,
         logout,
         handlePostTweet,
         handleTweetChange,
+        openSideBar,
+        setSearchUser,
+        searchingUser,
+        verifyIsSearch,
     }
 }
 

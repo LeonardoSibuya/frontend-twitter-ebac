@@ -21,10 +21,12 @@ const Tweets = ({ name, tweet, created_at, profile, isHomepage }: PropsTweet) =>
         <S.Tweet>
             <S.TweetInfo>
                 {isHomepage ? (
-                    <Link href={`/profiles/${profile}`}>{name}</Link>
+                    <Link href={`/profiles/${profile}`}>
+                        @{name}
+                    </Link>
                 ) : (
                     <S.NameSpan>
-                        {name}
+                        @{name}
                     </S.NameSpan>
                 )}
                 <TimeIcon width="12px" />

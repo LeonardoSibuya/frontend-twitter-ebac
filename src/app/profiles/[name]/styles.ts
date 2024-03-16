@@ -1,3 +1,4 @@
+import { breakpoints } from "@/styles"
 import styled from "styled-components"
 
 export const Section = styled.section`
@@ -5,6 +6,10 @@ export const Section = styled.section`
     height: 100vh;
     padding-top: 40px;
     position: relative;
+
+    @media (max-width: ${breakpoints.celphone}) {
+        padding-top: 80px;
+    }
 `
 
 export const ButtonHome = styled.button`
@@ -51,6 +56,21 @@ export const ProfileName = styled.div`
         font-size: 16px;
         color: #8e8e8e;
     }
+
+    @media (max-width: ${breakpoints.celphone}) {
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        h4 {
+            font-size: 26px;
+        }
+
+        h5 {
+            font-size: 14px;
+        }
+    }
 `
 
 export const ButtonFollow = styled.button`
@@ -64,6 +84,10 @@ export const ButtonFollow = styled.button`
     border-radius: 8px;
     padding: 8px;
     transition: 0.2s ease;
+
+    @media (max-width: ${breakpoints.celphone}) {
+        font-size: 10px;
+    }
 
     &.follow {
         &:hover {
@@ -99,6 +123,16 @@ export const ListTweets = styled.ul`
             color: #fff;
         }
     }
+
+    @media (max-width: ${breakpoints.celphone}) {
+        font-size: 12px;
+
+        li {
+            span {
+                font-size: 14px;
+            }
+        }
+    }
 ` 
 
 export const Line = styled.span`
@@ -113,6 +147,10 @@ export const TweetsContainer = styled.ul`
     height: 100%;
     overflow-y: scroll;
     padding-right: 8px;
+
+    @media (max-width: ${breakpoints.celphone}) {
+        max-height: 240px;
+    }
 
     &::-webkit-scrollbar {
         background-color: #0c0c0c;

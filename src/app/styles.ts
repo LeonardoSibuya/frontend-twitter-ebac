@@ -130,5 +130,10 @@ export const AlreadyAccount = styled.div`
         p, button {
             width: 40%;
         }
+
+        p {
+            font-size: 14px;
+            text-align: center;
+        }
     }
 `

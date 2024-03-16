@@ -6,7 +6,7 @@ import * as S from './styles'
 import Image from 'next/image';
 
 import { BeatLoader } from 'react-spinners';
-import { MoonIcon, Search2Icon, TriangleUpIcon, ChatIcon } from '@chakra-ui/icons'
+import { MoonIcon, Search2Icon, ChatIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 
 import profile from '../../../public/profile.png'
 
@@ -18,7 +18,23 @@ import Link from 'next/link';
 
 const Homepage = () => {
 
-  const { handlePostTweet, handleTweetChange, isLoaded, isLogoff, logout, newTweet, session, tweets } = useHomepage()
+  const {
+    handlePostTweet,
+    handleTweetChange,
+    logout,
+    openSideBar,
+    searchingUser,
+    setSearchUser,
+    verifyIsSearch,
+    isLoaded,
+    isLogoff,
+    newTweet,
+    session,
+    tweets,
+    isOpen,
+    isSearch,
+  } = useHomepage()
+
 
   return (
     <>
@@ -33,40 +49,87 @@ const Homepage = () => {
         <>
           {isLoaded ? (
             <S.MainContent>
-              <S.Aside>
-                <h1>
-                  <span>ebac</span>-X
-                </h1>
+              <S.ButtonMobile onClick={openSideBar}>
+                {isOpen ? (
+                  <>
+                    <CloseIcon width='14px' color="#fff" />
+                  </>
+                ) : (
+                  <>
+                    <HamburgerIcon width='18px' color="#fff" />
+                  </>
+                )}
+              </S.ButtonMobile>
 
-                <S.ListLinks>
-                  <li>
-                    <Search2Icon width='14px' />
-                    <a href="">
-                      Buscar
-                    </a>
-                  </li>
+              {isOpen ? (
+                <>
+                  <S.Aside>
+                    <h1>
+                      <span>ebac</span>-X
+                    </h1>
+                    <S.ListLinks>
+                      <li>
+                        <Search2Icon width='14px' display={isSearch ? 'none' : 'block'} />
+                        <input
+                          type="text"
+                          placeholder='Usuários'
+                          onChange={(e) => {
+                            setSearchUser(e.target.value);
+                            verifyIsSearch(e.target.value);
+                          }}
+                        />
+                        {isSearch ?
+                          <S.ButtonSearchUser
+                            onClick={searchingUser}>
+                            buscar
+                          </S.ButtonSearchUser> : ''}
+                      </li>
 
-                  <li>
-                    <ChatIcon width='14px' />
-                    <a href="">
-                      Mensagens
-                    </a>
-                  </li>
-                </S.ListLinks>
+                      <li>
+                        <ChatIcon width='14px' />
+                        <a href="">
+                          Mensagens
+                        </a>
+                      </li>
+                    </S.ListLinks>
 
-                <S.ProfileDiv>
-                  <MoonIcon width='14px' color="#14659b" />
-                  <Link href={`/profiles/${session?.user?.name}`}>
-                    Olá {session?.user?.name}
-                  </Link>
-                </S.ProfileDiv>
+                    <S.ProfileDiv>
+                      <MoonIcon width='14px' color="#14659b" />
+                      <Link href={`/profiles/${session?.user?.name}`}>
+                        Olá {session?.user?.name}
+                      </Link>
+                    </S.ProfileDiv>
 
-                <S.ButtonLogout type='button' onClick={logout}>
-                  Sair
-                </S.ButtonLogout>
-              </S.Aside>
+                    <S.ButtonLogout type='button' onClick={logout}>
+                      Sair
+                    </S.ButtonLogout>
+                  </S.Aside>
+                </>
+              ) : (
+                <>
+                  <S.AsideMobile>
+                    <h1>
+                      X
+                    </h1>
 
-              <S.HomePageSection>
+                    <S.ListLinks>
+                      <li>
+                        <Search2Icon width='14px' />
+                      </li>
+
+                      <li>
+                        <ChatIcon width='14px' />
+                      </li>
+                    </S.ListLinks>
+
+                    <S.ProfileDiv>
+                      <MoonIcon width='14px' color="#14659b" />
+                    </S.ProfileDiv>
+                  </S.AsideMobile>
+                </>
+              )}
+
+              <S.HomePageSection className={isOpen ? 'mobile' : ''}>
                 <h2>Seu Feed</h2>
 
                 <S.CreatePostDiv>

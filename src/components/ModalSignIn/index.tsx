@@ -43,6 +43,7 @@ const ModalSignIn = () => {
                     minHeight={'60vh'}
                     padding={'24px 0px'}
                     boxShadow="4px 4px 4px 2px #000"
+                    margin={'24px'}
                 >
                     <ModalHeader>
                         <S.ModalTitle>

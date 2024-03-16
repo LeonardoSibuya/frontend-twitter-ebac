@@ -1,3 +1,4 @@
+import { breakpoints } from "@/styles";
 import styled from "styled-components";
 
 export const ModalTitle = styled.h3`
@@ -55,6 +56,10 @@ export const InputContainer = styled.div`
                 color: #fff;
                 text-align: center;
                 font-family: "Kode Mono", monospace;
+
+                @media (max-width: ${breakpoints.tablet}) {
+                    font-size: 12px;
+                }
             }
         }
 

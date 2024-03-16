@@ -29,6 +29,12 @@ const nextAuthOptions: NextAuthOptions = {
                     },
                     addFollower: function (user: User): void {
                         throw new Error("Function not implemented.");
+                    },
+                    unfollow: function (userToUnfollow: User): void {
+                        throw new Error("Function not implemented.");
+                    },
+                    removeFollower: function (userToRemove: User): void {
+                        throw new Error("Function not implemented.");
                     }
                 };
 
@@ -65,6 +71,12 @@ const nextAuthOptions: NextAuthOptions = {
                     throw new Error("Function not implemented.");
                 },
                 addFollower: function (user: User): void {
+                    throw new Error("Function not implemented.");
+                },
+                unfollow: function (userToUnfollow: User): void {
+                    throw new Error("Function not implemented.");
+                },
+                removeFollower: function (userToRemove: User): void {
                     throw new Error("Function not implemented.");
                 }
             };

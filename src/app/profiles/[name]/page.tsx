@@ -15,6 +15,7 @@ import Tweets from "@/components/Tweets"
 import UserArray from "@/Utils/User"
 import LoadingScreen from "@/components/LoadingScreen"
 import { TriangleUpIcon } from '@chakra-ui/icons'
+import ModalFollows from '@/components/ModalFollows'
 
 const Profiles = () => {
     const { data: session, status } = useSession()
@@ -148,7 +149,7 @@ const Profiles = () => {
                                         </S.ProfileName>
                                         <S.ListTweets>
                                             <li>
-                                                <span>
+                                                <span className='tweets'>
                                                     {userFound.tweets?.length}
                                                 </span>
                                                 Tweets
@@ -157,13 +158,19 @@ const Profiles = () => {
                                                 <span>
                                                     {userFound.follows?.length}
                                                 </span>
-                                                Seguindo
+                                                <ModalFollows
+                                                    title={'Seguindo'}
+                                                    username={userFound!.follows!.map((user) => user.name)}
+                                                />
                                             </li>
                                             <li>
                                                 <span>
                                                     {userFound.followers?.length}
                                                 </span>
-                                                Seguidores
+                                                <ModalFollows
+                                                    title={'Seguidores'}
+                                                    username={userFound!.followers!.map((user) => user.name)}
+                                                />
                                             </li>
 
                                             {userIsLoged ?

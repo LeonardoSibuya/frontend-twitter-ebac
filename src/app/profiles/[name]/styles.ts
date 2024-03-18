@@ -1,4 +1,5 @@
 import { breakpoints } from "@/styles"
+import { Button } from "@chakra-ui/react"
 import styled from "styled-components"
 
 export const Section = styled.section`
@@ -116,11 +117,16 @@ export const ListTweets = styled.ul`
 
     li {
         font-family: "Kode Mono", monospace;
+        display: flex;
+        align-items: center;
 
         span {
-            padding-right: 4px;
             font-size: 16px;
             color: #fff;
+            
+            &.tweets {
+                padding-right: 4px;
+            }
         }
     }
 
@@ -133,7 +139,7 @@ export const ListTweets = styled.ul`
             }
         }
     }
-` 
+`
 
 export const Line = styled.span`
     width: 100%;

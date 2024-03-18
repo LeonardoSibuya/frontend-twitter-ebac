@@ -139,6 +139,7 @@ export const ListLinks = styled.ul`
             font-size: 14px;
             font-family: "Kode Mono", monospace;
             background-color: transparent;
+            border: 1px solid transparent;
             width: 60%;
             color: #fff;
             cursor: pointer;

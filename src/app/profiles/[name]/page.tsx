@@ -5,6 +5,7 @@ import * as S from './styles'
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useParams, useRouter } from "next/navigation"
+import { formatDistanceToNow } from 'date-fns';
 import Image from "next/image"
 
 import { Container } from "@/styles"
@@ -12,19 +13,22 @@ import { Container } from "@/styles"
 import profileImg from '../../../../public/profile.png'
 import Tweets from "@/components/Tweets"
 
-import UserArray from "@/Utils/User"
 import LoadingScreen from "@/components/LoadingScreen"
 import { TriangleUpIcon } from '@chakra-ui/icons'
 import ModalFollows from '@/components/ModalFollows'
+import { useUser } from '@/app/contexts/UserContext'
 
 const Profiles = () => {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { name } = useParams();
 
-    const userFound = UserArray.find((u) => u.name.toLowerCase() === name.toString().toLowerCase())
+    const { users, fetchUsers, deleteUserTweet } = useUser()
+
+    const userFound = users.find((u) => u.name.toLowerCase() === name.toString().toLowerCase())
 
     const [isLoaded, setIsLoaded] = useState(false)
+    const [tweetDeleted, setTweetDeleted] = useState(false)
     const [followersCount, setFollowersCount] = useState(userFound?.followers?.length || 0);
     const [followingCount, setFollowingCount] = useState(userFound?.follows?.length || 0);
 
@@ -47,6 +51,16 @@ const Profiles = () => {
         }
     }, [status, session, router]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setTweetDeleted(false)
+        }, 3000);
+    }, [tweetDeleted])
+
+    useEffect(() => {
+        fetchUsers();
+    }, [fetchUsers]);
+
     const bakcHomepage = () => {
         setIsLoaded(false)
         setTimeout(() => {
@@ -67,7 +81,7 @@ const Profiles = () => {
 
     const userIsLoged = userFound!.name === session?.user?.name ? true : false
 
-    const profileLoged = UserArray.find((u) => u.email === session!.user?.email);
+    const profileLoged = users.find((u) => u.email === session!.user?.email);
 
     const updateUser = () => {
         setFollowersCount(userFound?.followers?.length || 0);
@@ -98,10 +112,8 @@ const Profiles = () => {
     };
 
     const followUser = () => {
-
         // Verifica se o usuário logado já segue o usuário encontrado
         if (userFound) {
-
             // Se não estiver seguindo, segue o usuário encontrado
             if (!alreadyFollowing) {
 
@@ -119,6 +131,17 @@ const Profiles = () => {
             } else {
                 unfollowUser()
             }
+        }
+    }
+
+    const handleDeleteTweet = async (tweetId: number) => {
+        try {
+            await deleteUserTweet(tweetId)
+            console.log('Tweet deletado com sucesso', 'tweet ID:', tweetId)
+            fetchUsers()
+            setTweetDeleted(true)
+        } catch (error) {
+            console.error('Erro ao excluir o tweet:', error, tweetId)
         }
     }
 
@@ -147,45 +170,55 @@ const Profiles = () => {
                                                 {userFound.email}
                                             </h5>
                                         </S.ProfileName>
-                                        <S.ListTweets>
-                                            <li>
-                                                <span className='tweets'>
-                                                    {userFound.tweets?.length}
-                                                </span>
-                                                Tweets
-                                            </li>
-                                            <li>
-                                                <span>
-                                                    {userFound.follows?.length}
-                                                </span>
-                                                <ModalFollows
-                                                    title={'Seguindo'}
-                                                    username={userFound!.follows!.map((user) => user.name)}
-                                                />
-                                            </li>
-                                            <li>
-                                                <span>
-                                                    {userFound.followers?.length}
-                                                </span>
-                                                <ModalFollows
-                                                    title={'Seguidores'}
-                                                    username={userFound!.followers!.map((user) => user.name)}
-                                                />
-                                            </li>
+                                        {tweetDeleted ? (
+                                            <>
+                                                <S.MessageDelete>
+                                                    Tweet deletado com sucesso!
+                                                </S.MessageDelete>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <S.ListTweets>
+                                                    <li>
+                                                        <span className='tweets'>
+                                                            {userFound.tweets?.length}
+                                                        </span>
+                                                        Tweets
+                                                    </li>
+                                                    <li>
+                                                        <span>
+                                                            {userFound.follows?.length}
+                                                        </span>
+                                                        <ModalFollows
+                                                            title={'Seguindo'}
+                                                            username={userFound!.follows!.map((user) => user.name)}
+                                                        />
+                                                    </li>
+                                                    <li>
+                                                        <span>
+                                                            {userFound.followers?.length}
+                                                        </span>
+                                                        <ModalFollows
+                                                            title={'Seguidores'}
+                                                            username={userFound!.followers!.map((user) => user.name)}
+                                                        />
+                                                    </li>
 
-                                            {userIsLoged ?
-                                                ('') : (
-                                                    <S.ButtonFollow
-                                                        className={
-                                                            alreadyFollowing
-                                                                ? 'unfollow'
-                                                                : 'follow'}
-                                                        onClick={followUser}
-                                                    >
-                                                        {alreadyFollowing ? 'seguindo' : 'seguir'}
-                                                    </S.ButtonFollow>
-                                                )}
-                                        </S.ListTweets>
+                                                    {userIsLoged ?
+                                                        ('') : (
+                                                            <S.ButtonFollow
+                                                                className={
+                                                                    alreadyFollowing
+                                                                        ? 'unfollow'
+                                                                        : 'follow'}
+                                                                onClick={followUser}
+                                                            >
+                                                                {alreadyFollowing ? 'seguindo' : 'seguir'}
+                                                            </S.ButtonFollow>
+                                                        )}
+                                                </S.ListTweets>
+                                            </>
+                                        )}
                                     </S.ProfileContainer>
 
                                     <S.Line />
@@ -194,10 +227,13 @@ const Profiles = () => {
                                         {userFound.tweets?.map((tweet, index) => (
                                             <li key={index}>
                                                 <Tweets
+                                                    id={tweet.id}
                                                     isHomepage={false}
-                                                    name={userFound.name}
-                                                    created_at={new Date()}
-                                                    tweet={tweet}
+                                                    name={tweet.name}
+                                                    created_at={formatDistanceToNow(tweet.created_at.toString())}
+                                                    tweet={tweet.text}
+                                                    deleteButton={handleDeleteTweet}
+                                                    isUserLogedPage={userIsLoged ? true : false}
                                                 />
                                             </li>
                                         ))}

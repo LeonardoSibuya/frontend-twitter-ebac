@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import { useRouter } from 'next/navigation';
 
@@ -7,18 +8,23 @@ import * as Yup from 'yup'
 import { signIn } from 'next-auth/react';
 
 import { SignInUserRequest } from '../validations/SignIn-user-request';
-import UserArray from '@/Utils/User';
+import userArray from '@/Utils/User';
+import { useUser } from '@/app/contexts/UserContext';
 
 const useModalSignIn = () => {
     const [isSubmited, setIsSubmited] = useState(false)
-
     const [passwordIsVisible, setPasswordIsVisible] = useState(false)
-
     const router = useRouter()
+
+    const { users, fetchUsers } = useUser()
+
+    useEffect(() => {
+        fetchUsers();
+    }, [fetchUsers]);
 
     const emailNolExists = (email: string) => {
         const lowerCaseEmail = email.toLowerCase();
-        const isEmailInUse = UserArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
+        const isEmailInUse = users.some((user: any) => user.email.toLowerCase() === lowerCaseEmail);
 
         return isEmailInUse;
     };

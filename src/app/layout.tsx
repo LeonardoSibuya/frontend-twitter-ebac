@@ -3,6 +3,7 @@ import { NextAuthSessionProvider } from "../providers/sessionProvider";
 import EstiloGlobal from "../styles";
 
 import { ChakraProviders } from '../providers/chakraProviders'
+import { UserProvider } from "./contexts/UserContext";
 
 export default async function RootLayout({
   children,
@@ -20,9 +21,11 @@ export default async function RootLayout({
 
       <EstiloGlobal />
       <body>
-        <NextAuthSessionProvider>
-          <ChakraProviders>{children}</ChakraProviders>
-        </NextAuthSessionProvider>
+        <UserProvider>
+          <NextAuthSessionProvider>
+            <ChakraProviders>{children}</ChakraProviders>
+          </NextAuthSessionProvider>
+        </UserProvider>
       </body>
     </html>
   );

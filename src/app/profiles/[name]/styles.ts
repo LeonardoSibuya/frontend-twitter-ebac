@@ -13,6 +13,16 @@ export const Section = styled.section`
     }
 `
 
+export const MessageDelete = styled.p`
+    background-color: #af0303;
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 16px;
+`
+
 export const ButtonHome = styled.button`
     color: #fff;
     position: absolute;

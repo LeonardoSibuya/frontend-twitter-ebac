@@ -1,4 +1,6 @@
-import UserArray, { User } from "@/Utils/User";;
+import userArray, { User } from "@/Utils/User";
+import axios from "axios";
+;
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 
@@ -12,41 +14,51 @@ const nextAuthOptions: NextAuthOptions = {
             },
 
             async authorize(credentials) {
-                const users: User[] = UserArray;
 
-                const name = credentials?.email.split('@')[0] || '';
+                try {
+                    const endpoint = 'http://127.0.0.1:8000/users/';
 
-                const newUser: User = {
-                    id: (users.length + 1).toString(),
-                    name: name || '',
-                    email: credentials?.email || '',
-                    password: credentials?.password || '',
-                    addTweet: function (tweet: string): void {
-                        throw new Error("Function not implemented.");
-                    },
-                    follow: function (users: User[]): void {
-                        throw new Error("Function not implemented.");
-                    },
-                    addFollower: function (user: User): void {
-                        throw new Error("Function not implemented.");
-                    },
-                    unfollow: function (userToUnfollow: User): void {
-                        throw new Error("Function not implemented.");
-                    },
-                    removeFollower: function (userToRemove: User): void {
-                        throw new Error("Function not implemented.");
+                    const response = await axios.get(endpoint)
+                    const users = response.data;
+
+                    const name = credentials?.email.split('@')[0] || '';
+
+                    const newUser: User = {
+                        id: (users.length + 1).toString(),
+                        name: name || '',
+                        email: credentials?.email || '',
+                        password: credentials?.password || '',
+                        addTweet: function (tweet: string): void {
+                            throw new Error("Function not implemented.");
+                        },
+                        follow: function (users: User[]): void {
+                            throw new Error("Function not implemented.");
+                        },
+                        addFollower: function (user: User): void {
+                            throw new Error("Function not implemented.");
+                        },
+                        unfollow: function (userToUnfollow: User): void {
+                            throw new Error("Function not implemented.");
+                        },
+                        removeFollower: function (userToRemove: User): void {
+                            throw new Error("Function not implemented.");
+                        }
+                    };
+
+                    users.push(newUser);
+
+                    const user = users.find((u: any) => u.email === credentials?.email);
+
+                    if (!user || user.password !== credentials?.password) {
+                        console.log('ERROR: Usuario invalido, ou senha incorreta')
+                        return null;
                     }
-                };
 
-                users.push(newUser);
-
-                const user = users.find((u) => u.email === credentials?.email);
-
-                if (!user || user.password !== credentials?.password) {
-                    return null;
+                    return Promise.resolve(user);
+                } catch (error) {
+                    console.error('Error authorizing user:', error)
+                    return Promise.reject(new Error('An error occurred while authorizing'));
                 }
-
-                return Promise.resolve(user);
             }
         })
     ],
@@ -82,7 +94,7 @@ const nextAuthOptions: NextAuthOptions = {
             };
 
 
-            UserArray.push(newUser);
+            userArray.push(newUser);
         },
         signIn: async (message) => {
 

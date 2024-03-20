@@ -6,25 +6,30 @@ import { useEffect, useState } from 'react';
 
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation';
-
-import UserArray, { User } from '@/Utils/User';
+import { formatDistanceToNow } from 'date-fns';
+import { useUser } from '@/app/contexts/UserContext';
+import axios from 'axios';
 
 const useHomepage = () => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [isLogoff, setIsLogoff] = useState(false)
-
-    const { data: session, status } = useSession()
-
     const [newTweet, setNewTweet] = useState('')
-
     const [isOpen, setIsOpen] = useState(true)
-
     const [searchUser, setSearchUser] = useState('')
     const [isSearch, setIsSearch] = useState(false)
 
-    const [tweets, setTweets] = useState<Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined>([]);
+    const { data: session, status } = useSession()
 
     const router = useRouter()
+
+    const [tweets, setTweets] = useState<Array<{ id: number; name: string; text: string; createdAt: Date }> | undefined>([]);
+
+    const { users, fetchUsers } = useUser()
+
+    useEffect(() => {
+        fetchUsers();
+    }, [fetchUsers]);
+
 
     const openSideBar = () => {
         setIsOpen(!isOpen)
@@ -32,7 +37,7 @@ const useHomepage = () => {
     }
 
     const searchingUser = () => {
-        const userSearched = UserArray.find((user) => user.name.toLowerCase() === searchUser.toLowerCase())
+        const userSearched = users.find((user) => user.name.toLowerCase() === searchUser.toLowerCase())
 
         if (!userSearched) {
             return alert('ERRO: Usuário não encontrado')
@@ -82,7 +87,7 @@ const useHomepage = () => {
         }
     };
 
-    const loggedInUser = UserArray.find(user => user.email === session?.user?.email);
+    const loggedInUser = users.find(user => user.email === session?.user?.email);
 
     const handleTweetChange = (event: any) => {
         setNewTweet(event.target.value);
@@ -97,14 +102,11 @@ const useHomepage = () => {
             }
 
             try {
-                const newTweetObject = {
-                    user: { name: loggedInUser.name },
-                    createdAt: new Date(), // Usar a data e hora atual
-                    text: newTweet,
-                };
+                const response = await axios.post(`http://127.0.0.1:8000/users/${loggedInUser.id}/tweet/`, {
+                    text: newTweet
+                });
 
-
-                await loggedInUser.addTweet(newTweet);
+                setTweets([...tweets!, response.data]);
                 setNewTweet('');
                 updateTweets();
             } catch (error) {
@@ -116,40 +118,46 @@ const useHomepage = () => {
         }
     };
 
-    const updateTweets = () => {
+    const updateTweets = async () => {
         if (session?.user?.email && loggedInUser) {
+            try {
+                const UserLogedTweetsPromises = await axios.get(`http://127.0.0.1:8000/users/${loggedInUser.id}/`);
 
-            // Obter os tweets do usuário logado
-            const userTweets = loggedInUser?.tweets?.map(tweet => ({
-                user: { name: loggedInUser.name },
-                createdAt: new Date(),
-                text: tweet,
-            }));
+                const userLogedTweets = UserLogedTweetsPromises.data.tweets.map((tweet: any) => ({
+                    id: tweet.id,
+                    text: tweet.text,
+                    name: tweet.name,
+                    createdAt: tweet.created_at,
+                }));
 
-            // Obter os tweets dos usuários que o usuário logado segue
-            const followedUsersTweets = loggedInUser?.follows?.flatMap(user =>
-                user?.tweets?.map(tweet => ({
-                    user: { name: user.name },
-                    createdAt: new Date(),
-                    text: tweet,
-                }))
-            );
+                // Obter os tweets dos usuários que o usuário logado segue
+                const followedUsersTweetsPromises = loggedInUser!.follows!.map(async user => {
+                    const userResponse = await axios.get(`http://127.0.0.1:8000/users/${user.id}/`);
 
-            // Combinar os tweets do usuário logado com os tweets dos usuários seguidos
-            const userTweetsFiltered = userTweets?.filter(tweet => tweet !== undefined) as Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined;
-            const followedUsersTweetsFiltered = followedUsersTweets?.filter(tweet => tweet !== undefined) as Array<{ text: string; user: { name: string }; createdAt: Date }> | undefined;
+                    return userResponse.data.tweets.map((tweet: any) => ({
+                        id: tweet.id,
+                        text: tweet.text,
+                        name: tweet.name,
+                        createdAt: tweet.created_at,
+                    }));
+                });
 
-            let combinedTweets = [...userTweetsFiltered!, ...followedUsersTweetsFiltered!];
+                const followedUsersTweets = await Promise.all(followedUsersTweetsPromises);
+                const UsersTweets = await Promise.all(userLogedTweets);
 
-            if (!combinedTweets) {
-                return;
+                const allTweets = [...UsersTweets.flat(), ...followedUsersTweets.flat()];
+
+                const sortedTweets = allTweets.sort();
+
+                setTweets(sortedTweets);
+            } catch (error) {
+                console.error('Erro ao atualizar tweets:', error);
             }
-
-            // Ordenar os tweets por ordem do mais novo para o mais velho
-            const sortedTweets = combinedTweets.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-            setTweets(sortedTweets);
         }
+    };
+
+    const formatCreatedAt = (createdAt: string): string => {
+        return formatDistanceToNow(new Date(createdAt), { addSuffix: true });
     };
 
     return {
@@ -167,6 +175,7 @@ const useHomepage = () => {
         setSearchUser,
         searchingUser,
         verifyIsSearch,
+        formatCreatedAt,
     }
 }
 

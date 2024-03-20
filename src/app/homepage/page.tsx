@@ -26,6 +26,7 @@ const Homepage = () => {
     searchingUser,
     setSearchUser,
     verifyIsSearch,
+    formatCreatedAt,
     isLoaded,
     isLogoff,
     newTweet,
@@ -149,13 +150,14 @@ const Homepage = () => {
 
                 <S.TweetsContainer>
                   <ul>
-                    {tweets?.map((tweet, index) => (
+                    {tweets?.map((tweet) => (
                       <Tweets
-                        key={index}
-                        name={tweet.user.name}
+                        key={tweet.id}
+                        id={tweet.id}
+                        name={tweet.name}
                         isHomepage={true}
-                        profile={tweet.user.name}
-                        created_at={tweet.createdAt}
+                        profile={tweet.name}
+                        created_at={formatCreatedAt(tweet?.createdAt?.toString() || new Date().toString())}
                         tweet={tweet.text}
                       />
                     ))}

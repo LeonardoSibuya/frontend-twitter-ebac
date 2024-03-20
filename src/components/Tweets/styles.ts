@@ -9,6 +9,16 @@ export const Tweet = styled.div`
     padding: 8px 16px;
     border-radius: 16px;
     margin-bottom: 24px;
+    position: relative;
+
+    button {
+        &.buttonDelete {
+            &:hover {
+                background-color: transparent;
+                color: #f50000;
+            }
+        }
+    }
 `
 
 export const TweetInfo = styled.div`

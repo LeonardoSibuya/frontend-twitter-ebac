@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
-import UserArray, { User, updateUserArray } from '@/Utils/User';
+import userArray, { User, updateuserArray } from '@/Utils/User';
 
 import { signIn } from 'next-auth/react';
 
@@ -21,7 +21,7 @@ const useModalSignUp = () => {
 
     const emailExists = (email: string) => {
         const lowerCaseEmail = email.toLowerCase();
-        const isEmailInUse = UserArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
+        const isEmailInUse = userArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
 
         return !isEmailInUse;
     };
@@ -31,7 +31,7 @@ const useModalSignUp = () => {
 
         try {
             const newUser: User = {
-                id: (UserArray.length + 1).toString(),
+                id: (userArray.length + 1).toString(),
                 name: name,
                 email: email,
                 password: password,
@@ -46,9 +46,9 @@ const useModalSignUp = () => {
                 }
             };
 
-            UserArray.push(newUser);
+            userArray.push(newUser);
             
-            updateUserArray([...UserArray, newUser]);
+            updateuserArray([...userArray, newUser]);
 
             await signIn('credentials', {
                 email: newUser.email,

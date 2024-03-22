@@ -12,7 +12,7 @@ export const nextAuthOptions: NextAuthOptions = {
             },
 
             async authorize(credentials) {
-                const endpoint = 'http://127.0.0.1:8000/users'
+                const endpoint = 'http://127.0.0.1:8000/users/'
                 try {
                     const response = await axios.get(`${endpoint}`)
                     const users = response.data;

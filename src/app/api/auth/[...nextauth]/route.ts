@@ -1,4 +1,4 @@
-import userArray, { User } from "@/Utils/User";
+import { User } from "@/Utils/User";
 import axios from "axios";
 ;
 import NextAuth, { NextAuthOptions } from "next-auth"
@@ -21,31 +21,10 @@ const nextAuthOptions: NextAuthOptions = {
                     const response = await axios.get(endpoint)
                     const users = response.data;
 
-                    const name = credentials?.email.split('@')[0] || '';
+                    // const newUser: User = {
+                    // };
 
-                    const newUser: User = {
-                        id: (users.length + 1).toString(),
-                        name: name || '',
-                        email: credentials?.email || '',
-                        password: credentials?.password || '',
-                        addTweet: function (tweet: string): void {
-                            throw new Error("Function not implemented.");
-                        },
-                        follow: function (users: User[]): void {
-                            throw new Error("Function not implemented.");
-                        },
-                        addFollower: function (user: User): void {
-                            throw new Error("Function not implemented.");
-                        },
-                        unfollow: function (userToUnfollow: User): void {
-                            throw new Error("Function not implemented.");
-                        },
-                        removeFollower: function (userToRemove: User): void {
-                            throw new Error("Function not implemented.");
-                        }
-                    };
-
-                    users.push(newUser);
+                    // users.push(newUser);
 
                     const user = users.find((u: any) => u.email === credentials?.email);
 
@@ -71,42 +50,24 @@ const nextAuthOptions: NextAuthOptions = {
     },
     events: {
         createUser: async (message) => {
-            const newUser: User = {
-                id: message.user.id,
-                name: message.user.name || '',
-                email: message.user.email || '',
-                password: '',
-                addTweet: function (tweet: string): void {
-                    throw new Error("Function not implemented.");
-                },
-                follow: function (users: User[]): void {
-                    throw new Error("Function not implemented.");
-                },
-                addFollower: function (user: User): void {
-                    throw new Error("Function not implemented.");
-                },
-                unfollow: function (userToUnfollow: User): void {
-                    throw new Error("Function not implemented.");
-                },
-                removeFollower: function (userToRemove: User): void {
-                    throw new Error("Function not implemented.");
-                }
-            };
+            // const newUser: User = {
+                
+            // };
 
 
-            userArray.push(newUser);
+            // userArray.push(newUser);
         },
         signIn: async (message) => {
 
-            if (message.isNewUser) {
+            // if (message.isNewUser) {
 
-                const newUser = {
-                    name: message.user.name || '',
-                    email: message.user.email || '',
-                };
+            //     const newUser = {
+            //         name: message.user.name || '',
+            //         email: message.user.email || '',
+            //     };
 
-                console.log('Novo usuário criado:', newUser);
-            }
+            //     console.log('Novo usuário criado:', newUser);
+            // }
         },
     },
 }

@@ -8,7 +8,6 @@ import * as Yup from 'yup'
 import { signIn } from 'next-auth/react';
 
 import { SignInUserRequest } from '../validations/SignIn-user-request';
-import userArray from '@/Utils/User';
 import { useUser } from '@/app/contexts/UserContext';
 
 const useModalSignIn = () => {

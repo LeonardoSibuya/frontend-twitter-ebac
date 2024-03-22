@@ -34,6 +34,7 @@ const Homepage = () => {
     tweets,
     isOpen,
     isSearch,
+    profileLoged,
   } = useHomepage()
 
 
@@ -142,7 +143,7 @@ const Homepage = () => {
                   />
                   <button
                     type="button"
-                    onClick={handlePostTweet}
+                    onClick={() => handlePostTweet(profileLoged!.id!, newTweet)}
                   >
                     Postar
                   </button>
@@ -151,15 +152,16 @@ const Homepage = () => {
                 <S.TweetsContainer>
                   <ul>
                     {tweets?.map((tweet) => (
-                      <Tweets
-                        key={tweet.id}
-                        id={tweet.id}
-                        name={tweet.name}
-                        isHomepage={true}
-                        profile={tweet.name}
-                        created_at={formatCreatedAt(tweet?.createdAt?.toString() || new Date().toString())}
-                        tweet={tweet.text}
-                      />
+                      <li key={tweet.id}>
+                        <Tweets
+                          id={tweet.id}
+                          name={tweet.name}
+                          isHomepage={true}
+                          profile={tweet.name}
+                          created_at={formatCreatedAt(tweet?.createdAt?.toString() || new Date().toString())}
+                          tweet={tweet.text}
+                        />
+                      </li>
                     ))}
                   </ul>
                 </S.TweetsContainer>

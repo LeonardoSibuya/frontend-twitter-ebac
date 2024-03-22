@@ -1,7 +1,9 @@
 // next.config.js
 import withFonts from 'next-fonts';
 
-const nextConfig = {};
+const nextConfig = {
+    
+};
 
 export default withFonts({
     fonts: {

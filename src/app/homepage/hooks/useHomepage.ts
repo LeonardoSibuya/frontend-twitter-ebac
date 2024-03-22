@@ -24,7 +24,9 @@ const useHomepage = () => {
 
     const [tweets, setTweets] = useState<Array<{ id: number; name: string; text: string; createdAt: Date }> | undefined>([]);
 
-    const { users, fetchUsers } = useUser()
+    const { users, fetchUsers, postTweet } = useUser()
+
+    const profileLoged = users.find((u) => u.email === session?.user?.email);
 
     useEffect(() => {
         fetchUsers();
@@ -87,14 +89,12 @@ const useHomepage = () => {
         }
     };
 
-    const loggedInUser = users.find(user => user.email === session?.user?.email);
-
     const handleTweetChange = (event: any) => {
         setNewTweet(event.target.value);
     };
 
-    const handlePostTweet = async () => {
-        if (loggedInUser) {
+    const handlePostTweet = async (userId: number, text: string) => {
+        if (profileLoged) {
 
             if (newTweet === '' || setNewTweet.length < 1) {
                 alert('ERRO: Não é possível postar tweets vazios')
@@ -102,26 +102,26 @@ const useHomepage = () => {
             }
 
             try {
-                const response = await axios.post(`http://127.0.0.1:8000/users/${loggedInUser.id}/tweet/`, {
-                    text: newTweet
-                });
-
-                setTweets([...tweets!, response.data]);
-                setNewTweet('');
-                updateTweets();
+                try {
+                    await postTweet(userId, text);
+                    setNewTweet('');
+                    updateTweets();
+                } catch (error) {
+                    console.error('Error posting tweet:', error);
+                }
             } catch (error) {
                 console.log(error);
             }
 
         } else {
-            console.log('Usuário não logado ou método addTweet não disponível');
+            console.log('Usuário não logado');
         }
     };
 
     const updateTweets = async () => {
-        if (session?.user?.email && loggedInUser) {
+        if (session?.user?.email && profileLoged) {
             try {
-                const UserLogedTweetsPromises = await axios.get(`http://127.0.0.1:8000/users/${loggedInUser.id}/`);
+                const UserLogedTweetsPromises = await axios.get(`http://127.0.0.1:8000/users/${profileLoged.id}/`);
 
                 const userLogedTweets = UserLogedTweetsPromises.data.tweets.map((tweet: any) => ({
                     id: tweet.id,
@@ -131,7 +131,7 @@ const useHomepage = () => {
                 }));
 
                 // Obter os tweets dos usuários que o usuário logado segue
-                const followedUsersTweetsPromises = loggedInUser!.follows!.map(async user => {
+                const followedUsersTweetsPromises = profileLoged!.follows!.map(async user => {
                     const userResponse = await axios.get(`http://127.0.0.1:8000/users/${user.id}/`);
 
                     return userResponse.data.tweets.map((tweet: any) => ({
@@ -147,7 +147,14 @@ const useHomepage = () => {
 
                 const allTweets = [...UsersTweets.flat(), ...followedUsersTweets.flat()];
 
-                const sortedTweets = allTweets.sort();
+                // Lista de tweets únicos, filtrando os tweets duplicados
+                const uniqueTweets = allTweets.filter((tweet, index, self) =>
+                    index === self.findIndex((t) => (
+                        t.id === tweet.id && t.name === tweet.name && t.text === tweet.text
+                    ))
+                );
+
+                const sortedTweets = uniqueTweets.sort();
 
                 setTweets(sortedTweets);
             } catch (error) {
@@ -168,6 +175,7 @@ const useHomepage = () => {
         tweets,
         isOpen,
         isSearch,
+        profileLoged,
         logout,
         handlePostTweet,
         handleTweetChange,

@@ -19,8 +19,6 @@ export type PropsTweet = {
 
 const Tweets = ({ name, tweet, created_at, profile, isHomepage, id, deleteButton, isUserLogedPage }: PropsTweet) => {
 
-    const date = new Date()
-
     return (
         <S.Tweet>
             <S.TweetInfo>

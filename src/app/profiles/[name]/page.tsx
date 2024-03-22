@@ -23,18 +23,21 @@ const Profiles = () => {
     const router = useRouter()
     const { name } = useParams();
 
-    const { users, fetchUsers, deleteUserTweet } = useUser()
+    const { users, fetchUsers, deleteUserTweet, follow, unfollow } = useUser()
 
     const userFound = users.find((u) => u.name.toLowerCase() === name.toString().toLowerCase())
 
     const [isLoaded, setIsLoaded] = useState(false)
     const [tweetDeleted, setTweetDeleted] = useState(false)
+
     const [followersCount, setFollowersCount] = useState(userFound?.followers?.length || 0);
     const [followingCount, setFollowingCount] = useState(userFound?.follows?.length || 0);
+    const [tweetsUserCount, setTweetsUserCount] = useState(userFound?.tweets?.length || 0);
 
     useEffect(() => {
         setFollowersCount(userFound?.followers?.length || 0);
         setFollowingCount(userFound?.follows?.length || 0);
+        setTweetsUserCount(userFound?.tweets?.length || 0);
     }, [userFound]);
 
     useEffect(() => {
@@ -77,68 +80,46 @@ const Profiles = () => {
         return;
     }
 
-    const alreadyFollowing = userFound!.followers?.some((u) => u.email === session!.user?.email);
 
     const userIsLoged = userFound!.name === session?.user?.name ? true : false
 
     const profileLoged = users.find((u) => u.email === session!.user?.email);
 
-    const updateUser = () => {
-        setFollowersCount(userFound?.followers?.length || 0);
-        setFollowingCount(profileLoged?.follows?.length || 0);
+    const alreadyFollowing = userFound!.followers?.some((u) => u.id === profileLoged!.id);
+
+    const followUser = async () => {
+        if (userFound && !alreadyFollowing) {
+            try {
+
+                const user = { ...profileLoged };
+
+                await follow(user!.id!, userFound.id);
+            } catch (error) {
+                console.error('Erro ao seguir o usuário:', error);
+            }
+        } else {
+            unfollowUser()
+        }
     }
 
-    const unfollowUser = () => {
-        // Verifica se o usuário logado já segue o usuário encontrado
-        if (userFound) {
-            // Se estiver seguindo, deixa de seguir o usuário encontrado
-            if (profileLoged) {
-                const followingIndex = profileLoged.follows!.findIndex(u => u.email === userFound.email);
+    const unfollowUser = async () => {
+        if (alreadyFollowing) {
+            try {
+                
+                const user = { ...profileLoged };
 
-                if (followingIndex !== -1) {
+                await unfollow(user!.id!, userFound.id);
 
-                    // Remove o usuário dos follows do usuário logado
-                    profileLoged.unfollow(userFound);
-
-                    // Remove o usuário logado dos followers do usuário encontrado
-                    userFound.removeFollower(profileLoged);
-
-                    updateUser()
-                } else {
-                    console.log("Você não segue este usuário.");
-                }
+            } catch (error) {
+                console.error('Erro ao deixar de seguir o usuário:', error);
             }
         }
     };
-
-    const followUser = () => {
-        // Verifica se o usuário logado já segue o usuário encontrado
-        if (userFound) {
-            // Se não estiver seguindo, segue o usuário encontrado
-            if (!alreadyFollowing) {
-
-                // Adiciona o usuário logado aos seguidores do usuário encontrado
-                if (profileLoged) {
-                    userFound.addFollower(profileLoged);
-                }
-
-                // Adiciona o usuário encontrado aos seguidos pelo usuário logado
-                if (profileLoged) {
-                    profileLoged.follow([userFound]);
-                }
-
-                updateUser()
-            } else {
-                unfollowUser()
-            }
-        }
-    }
 
     const handleDeleteTweet = async (tweetId: number) => {
         try {
             await deleteUserTweet(tweetId)
             console.log('Tweet deletado com sucesso', 'tweet ID:', tweetId)
-            fetchUsers()
             setTweetDeleted(true)
         } catch (error) {
             console.error('Erro ao excluir o tweet:', error, tweetId)
@@ -181,13 +162,13 @@ const Profiles = () => {
                                                 <S.ListTweets>
                                                     <li>
                                                         <span className='tweets'>
-                                                            {userFound.tweets?.length}
+                                                            {tweetsUserCount}
                                                         </span>
                                                         Tweets
                                                     </li>
                                                     <li>
                                                         <span>
-                                                            {userFound.follows?.length}
+                                                            {followingCount}
                                                         </span>
                                                         <ModalFollows
                                                             title={'Seguindo'}
@@ -196,7 +177,7 @@ const Profiles = () => {
                                                     </li>
                                                     <li>
                                                         <span>
-                                                            {userFound.followers?.length}
+                                                            {followersCount}
                                                         </span>
                                                         <ModalFollows
                                                             title={'Seguidores'}

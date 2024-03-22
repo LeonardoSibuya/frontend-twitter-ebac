@@ -62,16 +62,15 @@ const ModalFollows = ({ title, username }: Props) => {
 
                     <ModalBody>
                         <S.ListUsers>
-                            <li>
-                                {username.map((user) => (
+                            {username.map((user, index) => ( // Usar index como chave
+                                <li key={index}>
                                     <Link
-                                        key={user}
                                         href={`/profiles/${user}`}
                                     >
-                                        {username.length <= 0 ? '' : `@${user}`}
+                                        @{user}
                                     </Link>
-                                ))}
-                            </li>
+                                </li>
+                            ))}
                         </S.ListUsers>
                     </ModalBody>
                 </ModalContent>

@@ -24,7 +24,7 @@ const UserContext = createContext<UserContextType>({
     postTweet: async () => { },
 });
 
-const endpoint = 'http://127.0.0.1:8000/users'
+export const endpoint = 'http://127.0.0.1:8000/users'
 
 // Crie um componente de provedor para envolver os componentes que precisarão acessar o contexto
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -33,7 +33,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Função para buscar usuários
     const fetchUsers = useCallback(async () => {
         try {
-            const response = await axios.get<User[]>(`${endpoint}/`);
+            const response = await axios.get<User[]>(`${endpoint}`);
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -75,7 +75,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const postTweet = async (userId: number, text: string) => {
         try {
-            await axios.post(`http://127.0.0.1:8000/users/${userId}/tweet/`, {
+            await axios.post(`${endpoint}/${userId}/tweet/`, {
                 text: text
             });
             fetchUsers();

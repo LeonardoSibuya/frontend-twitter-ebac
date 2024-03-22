@@ -41,13 +41,13 @@ const Profiles = () => {
     }, [userFound]);
 
     useEffect(() => {
-        if (status === 'loading') {
-            console.log('A sessão ainda está carregando, aguarde...');
+        if (status === "loading") {
+            console.log("loading")
             return;
         }
         if (status === 'authenticated' && session) {
             setTimeout(() => {
-                setIsLoaded(true)
+                setIsLoaded(true);
             }, 3000)
         } else {
             router.replace("/");
@@ -93,7 +93,7 @@ const Profiles = () => {
 
                 const user = { ...profileLoged };
 
-                await follow(user!.id!, userFound.id);
+                await follow(user!.id!, userFound!.id!);
             } catch (error) {
                 console.error('Erro ao seguir o usuário:', error);
             }
@@ -105,10 +105,10 @@ const Profiles = () => {
     const unfollowUser = async () => {
         if (alreadyFollowing) {
             try {
-                
+
                 const user = { ...profileLoged };
 
-                await unfollow(user!.id!, userFound.id);
+                await unfollow(user!.id!, userFound!.id!);
 
             } catch (error) {
                 console.error('Erro ao deixar de seguir o usuário:', error);
@@ -119,10 +119,10 @@ const Profiles = () => {
     const handleDeleteTweet = async (tweetId: number) => {
         try {
             await deleteUserTweet(tweetId)
-            console.log('Tweet deletado com sucesso', 'tweet ID:', tweetId)
             setTweetDeleted(true)
         } catch (error) {
-            console.error('Erro ao excluir o tweet:', error, tweetId)
+            console.error(error)
+            alert(`ERRO ao excluir o tweet com ID: ${tweetId}`)
         }
     }
 

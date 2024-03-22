@@ -57,6 +57,7 @@ export const ListUsers = styled.ul`
 
         a {
             cursor: pointer;
+            margin-bottom: 16px;
 
             &:hover {
                 color: #ccc;

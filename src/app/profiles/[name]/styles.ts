@@ -159,7 +159,7 @@ export const Line = styled.span`
 `
 
 export const TweetsContainer = styled.ul`
-    max-height: 320px;
+    max-height: 40vh;
     height: 100%;
     overflow-y: scroll;
     padding-right: 8px;

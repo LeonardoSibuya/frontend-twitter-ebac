@@ -15,14 +15,12 @@ const Login = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
 
-    // Verifica se a sessão está carregando (loading)
     if (status === "loading") {
-        console.log("Carregando a sessão...");
+        console.log("loading")
         return;
     }
 
-    if (session) {
-        console.log("Sessão existente:", session);
+    if (session && status === "authenticated") {
         router.replace("/homepage");
     }
 

@@ -1,15 +1,19 @@
 "use client"
 
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+import { endpoint } from "@/app/contexts/UserContext";
 
 import { useRouter } from 'next/navigation';
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
-import userArray, { User, updateuserArray } from '@/Utils/User';
+import { User } from '@/Utils/User';
 
 import { signIn } from 'next-auth/react';
+import { useUser } from '@/app/contexts/UserContext';
 
 const useModalSignUp = () => {
     const [isSubmited, setIsSubmited] = useState(false)
@@ -19,9 +23,15 @@ const useModalSignUp = () => {
 
     const router = useRouter()
 
+    const { users, fetchUsers } = useUser()
+
+    useEffect(() => {
+        fetchUsers();
+    }, [fetchUsers]);
+
     const emailExists = (email: string) => {
         const lowerCaseEmail = email.toLowerCase();
-        const isEmailInUse = userArray.some((user) => user.email.toLowerCase() === lowerCaseEmail);
+        const isEmailInUse = users.some((user) => user.email.toLowerCase() === lowerCaseEmail);
 
         return !isEmailInUse;
     };
@@ -30,31 +40,21 @@ const useModalSignUp = () => {
         const { name, email, password } = formik.values;
 
         try {
-            const newUser: User = {
-                id: (userArray.length + 1).toString(),
-                name: name,
-                email: email,
-                password: password,
-                addTweet: function (tweet: string): void {
-                    throw new Error('Function not implemented.');
-                },
-                follow: function (users: Omit<User, 'password'>[]): void {
-                    throw new Error('Function not implemented.');
-                },
-                addFollower: function (user: Omit<User, 'password'>): void {
-                    throw new Error('Function not implemented.');
-                }
-            };
-
-            userArray.push(newUser);
-            
-            updateuserArray([...userArray, newUser]);
-
-            await signIn('credentials', {
-                email: newUser.email,
-                password: newUser.password,
-                redirect: false,
+            const response = await axios.post(`${endpoint}/`, {
+                name,
+                email,
+                password,
             });
+
+            fetchUsers();
+
+            setTimeout(async () => {
+                await signIn('credentials', {
+                    email: email,
+                    password: password,
+                    redirect: false,
+                });
+            }, 3000);
 
             setIsSubmited(true);
         } catch (error) {
@@ -72,20 +72,10 @@ const useModalSignUp = () => {
 
     const formik = useFormik<User>({
         initialValues: {
-            id: '',
             name: '',
             email: '',
             password: '',
             confirmPassword: '',
-            addTweet: function (tweet: string): void {
-                throw new Error('Function not implemented.');
-            },
-            follow: function (users: Omit<User, 'password'>[]): void {
-                throw new Error('Function not implemented.');
-            },
-            addFollower: function (user: Omit<User, 'password'>): void {
-                throw new Error('Function not implemented.');
-            }
         },
         validationSchema: Yup.object({
             name: Yup.string()

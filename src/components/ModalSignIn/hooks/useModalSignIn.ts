@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import { useRouter } from 'next/navigation';
 
@@ -32,13 +31,13 @@ const useModalSignIn = () => {
         const { email, password } = formik.values
 
         const result = await signIn('credentials', {
-            email,
-            password,
+            email: email,
+            password: password,
             redirect: false
         })
 
         if (result?.error) {
-            console.log(result)
+            alert(`ERROR: ${result.status} ${result.error}`)
             return;
         }
 

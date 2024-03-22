@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
+import { endpoint } from "@/app/contexts/UserContext";
 
 import { signOut, useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation';
@@ -64,8 +65,8 @@ const useHomepage = () => {
     }, [])
 
     useEffect(() => {
-        if (status === 'loading') {
-            console.log('A sessão ainda está carregando, aguarde...');
+        if (status === "loading") {
+            console.log("loading")
             return;
         }
         if (status === 'authenticated' && session) {
@@ -95,7 +96,6 @@ const useHomepage = () => {
 
     const handlePostTweet = async (userId: number, text: string) => {
         if (profileLoged) {
-
             if (newTweet === '' || setNewTweet.length < 1) {
                 alert('ERRO: Não é possível postar tweets vazios')
                 return;
@@ -112,33 +112,30 @@ const useHomepage = () => {
             } catch (error) {
                 console.log(error);
             }
-
-        } else {
-            console.log('Usuário não logado');
         }
     };
 
     const updateTweets = async () => {
         if (session?.user?.email && profileLoged) {
             try {
-                const UserLogedTweetsPromises = await axios.get(`http://127.0.0.1:8000/users/${profileLoged.id}/`);
+                const UserLogedTweetsPromises = await axios.get(`${endpoint}/${profileLoged.id}/`);
 
                 const userLogedTweets = UserLogedTweetsPromises.data.tweets.map((tweet: any) => ({
                     id: tweet.id,
                     text: tweet.text,
                     name: tweet.name,
-                    createdAt: tweet.created_at,
+                    createdAt: new Date(tweet.created_at),
                 }));
 
                 // Obter os tweets dos usuários que o usuário logado segue
                 const followedUsersTweetsPromises = profileLoged!.follows!.map(async user => {
-                    const userResponse = await axios.get(`http://127.0.0.1:8000/users/${user.id}/`);
+                    const userResponse = await axios.get(`${endpoint}/${user.id}/`);
 
                     return userResponse.data.tweets.map((tweet: any) => ({
                         id: tweet.id,
                         text: tweet.text,
                         name: tweet.name,
-                        createdAt: tweet.created_at,
+                        createdAt: new Date(tweet.created_at),
                     }));
                 });
 
@@ -154,7 +151,7 @@ const useHomepage = () => {
                     ))
                 );
 
-                const sortedTweets = uniqueTweets.sort();
+                const sortedTweets = uniqueTweets.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
                 setTweets(sortedTweets);
             } catch (error) {

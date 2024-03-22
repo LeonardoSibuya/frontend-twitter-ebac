@@ -407,7 +407,7 @@ export const CreatePostDiv = styled.div`
 `
 
 export const TweetsContainer = styled.div`
-    max-height: 320px;
+    max-height: 60vh;
     height: 100%;
     overflow-y: scroll;
     padding-right: 8px;

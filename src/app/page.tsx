@@ -24,6 +24,8 @@ const Login = () => {
         router.replace("/homepage");
     }
 
+    if (!session && status === "unauthenticated")
+
     return (
         <S.LoginContainer>
             <S.Content>

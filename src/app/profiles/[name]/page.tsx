@@ -64,7 +64,7 @@ const Profiles = () => {
         fetchUsers();
     }, [fetchUsers]);
 
-    const bakcHomepage = () => {
+    const backHomepage = () => {
         setIsLoaded(false)
         setTimeout(() => {
             setIsLoaded(true)
@@ -133,7 +133,7 @@ const Profiles = () => {
                     <S.Section>
                         <S.ButtonHome
                             type='button'
-                            onClick={bakcHomepage}
+                            onClick={backHomepage}
                         >
                             Página inicial
                             <TriangleUpIcon width='18px' />

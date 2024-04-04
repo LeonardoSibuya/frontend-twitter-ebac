@@ -89,9 +89,9 @@ const Homepage = () => {
 
                       <li>
                         <ChatIcon width='14px' />
-                        <a href="">
+                        <Link href={`/messages/${profileLoged?.id}`}>
                           Mensagens
-                        </a>
+                        </Link>
                       </li>
                     </S.ListLinks>
 

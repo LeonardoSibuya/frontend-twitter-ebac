@@ -2,26 +2,30 @@
 
 import React, { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
 import axios from 'axios';
-import { User } from '@/Utils/User';
+import { User, UserMessagesInterface } from '@/Utils/User';
 
 // Defina o tipo para o contexto do usuário
 interface UserContextType {
     users: User[];
+    usersMessages: UserMessagesInterface[];
     fetchUsers: () => void;
     deleteUserTweet: (tweetId: number) => Promise<void>;
     follow: (followerId: number, targetUserId: number) => void;
     unfollow: (userToUnfollow: number, profileLoged: number) => void;
-    postTweet: (userId: number, text: string) => Promise<void>
+    postTweet: (userId: number, text: string) => Promise<void>;
+    fetchtUserMessages: (userId: number) => void;
 }
 
 // Crie o contexto do usuário
 const UserContext = createContext<UserContextType>({
     users: [],
+    usersMessages: [],
     fetchUsers: () => { },
     deleteUserTweet: async () => { },
     follow: async () => { },
     unfollow: async () => { },
     postTweet: async () => { },
+    fetchtUserMessages: async () => { },
 });
 
 export const endpoint = 'http://127.0.0.1:8000/users'
@@ -29,12 +33,22 @@ export const endpoint = 'http://127.0.0.1:8000/users'
 // Crie um componente de provedor para envolver os componentes que precisarão acessar o contexto
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [users, setUsers] = useState<User[]>([]);
+    const [usersMessages, setUsersMessages] = useState<UserMessagesInterface[]>([]);
 
     // Função para buscar usuários
     const fetchUsers = useCallback(async () => {
         try {
             const response = await axios.get<User[]>(`${endpoint}`);
             setUsers(response.data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    }, []);
+
+    const fetchtUserMessages = useCallback(async (userId: number) => {
+        try {
+            const response = await axios.get(`${endpoint}/${userId}/user_messages/`);
+            setUsersMessages(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -90,7 +104,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [fetchUsers]);
 
     return (
-        <UserContext.Provider value={{ users, fetchUsers, deleteUserTweet, follow, unfollow, postTweet }}>
+        <UserContext.Provider value={{ users, usersMessages, fetchUsers, deleteUserTweet, follow, unfollow, postTweet, fetchtUserMessages }}>
             {children}
         </UserContext.Provider>
     );

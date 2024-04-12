@@ -224,11 +224,45 @@ export const ListMessages = styled.ul`
     }
 `
 
+export const TextAreaContainer = styled.div`
+    position: relative;
+
+    button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 4% 15%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #11d68a;
+        padding: 8px;
+        color: #fff;
+        border-radius: 8px;
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: 0.2s ease;
+
+        &:hover {
+            background-color: #0b8e5a;
+            transition: 0.2s ease;
+        }
+
+        &:active {
+            transform: scale(0.9);
+            transition: 0.2s ease;
+        }
+    }
+`
+
 export const TextArea = styled.textarea`
     resize: none;
     width: 60%;
     height: 130px;
-    margin: 24px auto 0;
+    margin: 24px auto;
     display: block;
     border-radius: 12px;
     border: 1px solid #ccc;
@@ -251,7 +285,6 @@ export const TextArea = styled.textarea`
         border-color: #11d68a;
         outline: none;
         transition: 0.5s ease;
-        width: 80%;
 
         &::placeholder {
             color: #fff;

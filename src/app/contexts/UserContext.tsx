@@ -13,6 +13,7 @@ interface UserContextType {
     follow: (followerId: number, targetUserId: number) => void;
     unfollow: (userToUnfollow: number, profileLoged: number) => void;
     postTweet: (userId: number, text: string) => Promise<void>;
+    userSendMessage: (senderId: number, receiverId: number, message: string) => void;
     fetchtUserMessages: (userId: number) => void;
 }
 
@@ -25,6 +26,7 @@ const UserContext = createContext<UserContextType>({
     follow: async () => { },
     unfollow: async () => { },
     postTweet: async () => { },
+    userSendMessage: async () => { },
     fetchtUserMessages: async () => { },
 });
 
@@ -53,6 +55,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error('Error fetching users:', error);
         }
     }, []);
+
+    const userSendMessage = async (senderId: number, receiverId: number, message: string) => {
+        try {
+            await axios.post(`${endpoint}/${senderId}/send_message/${receiverId}/`, {
+                message: message
+            })
+        } catch (error) {
+
+        }
+    }
 
     const deleteUserTweet = async (tweetId: number) => {
         try {
@@ -104,7 +116,19 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [fetchUsers]);
 
     return (
-        <UserContext.Provider value={{ users, usersMessages, fetchUsers, deleteUserTweet, follow, unfollow, postTweet, fetchtUserMessages }}>
+        <UserContext.Provider value={
+            {
+                users, 
+                usersMessages, 
+                fetchUsers, 
+                deleteUserTweet, 
+                follow, 
+                unfollow, 
+                postTweet,
+                userSendMessage, 
+                fetchtUserMessages
+            }
+        }>
             {children}
         </UserContext.Provider>
     );

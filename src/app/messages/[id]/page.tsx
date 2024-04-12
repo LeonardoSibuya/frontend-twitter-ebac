@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from 'date-fns';
 import { useSession } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from 'next/link';
 
@@ -15,22 +15,23 @@ import { MessagesInterface, UserMessagesInterface } from '@/Utils/User';
 import profile from '../../../../public/profile.png'
 import messageImg from '../../../../public/message.png'
 
-import { CloseIcon, TriangleUpIcon } from '@chakra-ui/icons';
-import { timeStamp } from "console";
+import { CloseIcon, TriangleUpIcon, ArrowRightIcon } from '@chakra-ui/icons';
 
 
 const Messages = () => {
 
     const { data: session, status } = useSession()
-    const { name } = useParams();
-    const { users, fetchUsers, fetchtUserMessages, usersMessages } = useUser()
+    const { users, fetchUsers, fetchtUserMessages, usersMessages, userSendMessage } = useUser()
     const router = useRouter()
 
     const [isLoaded, setIsLoaded] = useState(false)
+    const [someChatOpen, setSomeChatOpen] = useState(false)
     const [usernameCurrentChat, setUsernameCurrentChat] = useState('')
+    const [messageContent, setMessageContent] = useState('')
+    const [currentUserId, setCurrentUserId] = useState(Number)
     const [searchUser, setSearchUser] = useState('')
     const [messagesCurrentChat, setMessagesCurrentChat] = useState<MessagesInterface[]>([]);
-    const [someChatOpen, setSomeChatOpen] = useState(false)
+    const [sendMessage, setSendMessage] = useState<MessagesInterface>()
 
     const profileLoged = users.find((u) => u.email === session!.user?.email);
 
@@ -66,6 +67,7 @@ const Messages = () => {
 
         if (user) {
             setMessagesCurrentChat(user.messages);
+            setCurrentUserId(user.user2.id)
         } else {
             setMessagesCurrentChat([]);
         }
@@ -86,7 +88,7 @@ const Messages = () => {
 
         const user = {
             user1: profileLoged!.id!,
-            user2: {id: userSearched!.id!, name: userSearched!.name!},
+            user2: { id: userSearched!.id!, name: userSearched!.name! },
             messages: [
                 {
                     sender: profileLoged!.id!,
@@ -96,18 +98,27 @@ const Messages = () => {
                 }
             ]
         }
-        
+
         usersMessages.push(user)
         setSomeChatOpen(true)
         setMessagesCurrentChat(user.messages)
         setUsernameCurrentChat(userSearched.name)
-
     }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             searchingUser();
         }
+    };
+
+    const handleSendMessage = () => {
+        userSendMessage(
+            sendMessage!.sender!,
+            sendMessage!.receiver!,
+            sendMessage!.message!
+        )
+
+        setMessageContent('')
     };
 
     const formatCreatedAt = (createdAt: string): string => {
@@ -185,7 +196,25 @@ const Messages = () => {
                                     ))}
                                 </S.ListMessages>
 
-                                <S.TextArea placeholder='Escreva sua mensagem' />
+                                <S.TextAreaContainer>
+                                    <S.TextArea
+                                        onChange={(e) => {
+                                            setSendMessage({
+                                                sender: profileLoged!.id!,
+                                                receiver: currentUserId,
+                                                message: messageContent,
+                                                timestamp: new Date()
+                                            });
+                                            setMessageContent(e.target.value)
+                                        }}
+                                        value={messageContent}
+                                        placeholder='Escreva sua mensagem'
+                                    />
+
+                                    <button onClick={handleSendMessage}>
+                                        <ArrowRightIcon />
+                                    </button>
+                                </S.TextAreaContainer>
                             </>
                         ) : (
                             <>

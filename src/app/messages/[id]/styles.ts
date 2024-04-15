@@ -1,3 +1,4 @@
+import { breakpoints } from "@/styles"
 import styled from "styled-components"
 
 export const Section = styled.section`
@@ -8,6 +9,19 @@ export const Section = styled.section`
     gap: 40px;
     background-color: #000;
     height: 100vh;
+
+    .isCellphone {
+        display: none;
+    }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        padding: 16px;
+        max-height: 100vh;
+
+        .isCellphone {
+            display: block;
+        }
+    }
 `
 
 export const Aside = styled.aside`
@@ -108,6 +122,47 @@ export const Aside = styled.aside`
             }
         }
     }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        display: none;
+        padding-left: 0;
+
+        &.isOpen {
+            display: block;
+            width: 100%;
+        }
+
+        h3 {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        ul {
+            gap: 16px;
+            max-height: 20vh;
+            padding-right: 8px;
+
+            &::-webkit-scrollbar {
+                width: 1px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                width: 1px;
+            }
+
+            li {
+                padding: 2px;
+                width: 100%;
+                font-size: 12px;
+            }
+        }
+
+        input {
+            margin-top: 24px;
+            padding: 6px;
+            font-size: 8px;
+        }
+    }
 `
 
 export const ListLinks = styled.div`
@@ -132,6 +187,14 @@ export const ListLinks = styled.div`
             color: #fff;
         }
     }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        margin-top: 24px;
+
+        a {
+            font-size: 8px;
+        }
+    }
 `
 
 export const ChatContainer = styled.div`
@@ -142,6 +205,19 @@ export const ChatContainer = styled.div`
     .imageChat {
         margin: 240px auto 0;
         width: 240px;
+    }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        display: none;
+
+        &.chatIsOpen {
+            width: 100%;
+            display: block;
+
+            .imageChat {
+                width: 120px;
+            }
+        }
     }
 `
 
@@ -164,6 +240,19 @@ export const ChatProfile = styled.div`
         letter-spacing: 1px;
         font-weight: bold;
         text-transform: uppercase;
+    }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        gap: 16px;
+
+        img {
+            width: 24px;
+            height: 24px;
+        }
+
+        span {
+            font-size: 16px;
+        }
     }
 `
 
@@ -195,6 +284,13 @@ export const ListMessages = styled.ul`
         width: 600px;
         font-size: 18px;
 
+        div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
         &.receiver {
             border-color: #1188d8;
             border-radius: 24px 24px 24px 8px;
@@ -220,6 +316,21 @@ export const ListMessages = styled.ul`
         span {
             font-size: 10px;
             color: #ccc;
+        }
+    }
+
+    @media (max-width: ${breakpoints.tablet}) {
+        padding: 16px 0 0;
+        gap: 16px;
+
+        li {
+            padding: 12px;
+            width: 100%;
+            font-size: 14px;
+
+            span {
+                font-size: 8px;
+            }
         }
     }
 `
@@ -255,7 +366,25 @@ export const TextAreaContainer = styled.div`
             transform: scale(0.9);
             transition: 0.2s ease;
         }
+
+        
     }
+
+    @media (max-width: ${breakpoints.celphone}) {
+        width: 100%;
+        margin: 32px auto 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+            button {
+                margin: 0;
+                position: relative;
+                padding: 6px;
+                font-size: 18px;
+            }
+        }
 `
 
 export const TextArea = styled.textarea`
@@ -271,6 +400,13 @@ export const TextArea = styled.textarea`
     color: #fff;
     font-size: 20px;
     transition: 0.5s ease;
+
+    @media (max-width: ${breakpoints.tablet}) {
+        width: 100%;
+        height: 100px;
+        font-size: 16px;
+        margin: 0;
+    }
 
     &::-webkit-scrollbar {
         background-color: transparent;
@@ -294,5 +430,9 @@ export const TextArea = styled.textarea`
     &::placeholder {
         font-size: 20px;
         text-align: center;
+
+        @media (max-width: ${breakpoints.tablet}) {
+            font-size: 16px;
+        }
     }
 `

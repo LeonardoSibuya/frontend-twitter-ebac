@@ -15,6 +15,7 @@ interface UserContextType {
     postTweet: (userId: number, text: string) => Promise<void>;
     userSendMessage: (senderId: number, receiverId: number, message: string) => void;
     fetchtUserMessages: (userId: number) => void;
+    fetchNewMessages: (userId: number) => void
 }
 
 // Crie o contexto do usuário
@@ -28,12 +29,14 @@ const UserContext = createContext<UserContextType>({
     postTweet: async () => { },
     userSendMessage: async () => { },
     fetchtUserMessages: async () => { },
+    fetchNewMessages: async () => {  },
 });
 
 export const endpoint = 'http://127.0.0.1:8000/users'
 
 // Crie um componente de provedor para envolver os componentes que precisarão acessar o contexto
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+
     const [users, setUsers] = useState<User[]>([]);
     const [usersMessages, setUsersMessages] = useState<UserMessagesInterface[]>([]);
 
@@ -55,6 +58,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error('Error fetching users:', error);
         }
     }, []);
+
+    const fetchNewMessages = async (userId: number) => {
+        try {
+            const response = await axios.get(`${endpoint}/${userId}/user_messages/`);
+
+            // Atualize o estado local das mensagens com as novas mensagens recebidas
+            setUsersMessages(response.data);
+        } catch (error) {
+            console.error('Error fetching new messages:', error);
+        }
+    };
 
     const userSendMessage = async (senderId: number, receiverId: number, message: string) => {
         try {
@@ -126,7 +140,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 unfollow, 
                 postTweet,
                 userSendMessage, 
-                fetchtUserMessages
+                fetchtUserMessages,
+                fetchNewMessages
             }
         }>
             {children}

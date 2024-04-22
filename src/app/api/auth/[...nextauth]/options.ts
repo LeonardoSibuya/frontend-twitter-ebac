@@ -2,8 +2,9 @@ import axios from "axios";
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
+const nextAuthSecret = process.env.NEXTAUTH_SECRET || 'default_secret_value';
+
 export const nextAuthOptions: NextAuthOptions = {
-    debug: true,
     providers: [
         Credentials({
             name: 'credentials',
@@ -32,6 +33,8 @@ export const nextAuthOptions: NextAuthOptions = {
             }
         })
     ],
+    secret: nextAuthSecret,
+    debug: true,
     pages: {
         signIn: '/',
         signOut: '/',

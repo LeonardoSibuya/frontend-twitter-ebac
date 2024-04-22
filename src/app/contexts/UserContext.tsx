@@ -32,7 +32,7 @@ const UserContext = createContext<UserContextType>({
     fetchNewMessages: async () => {  },
 });
 
-export const endpoint = 'http://127.0.0.1:8000/users'
+export const endpoint = 'https://leonardosibuya.pythonanywhere.com/users'
 
 // Crie um componente de provedor para envolver os componentes que precisarão acessar o contexto
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
